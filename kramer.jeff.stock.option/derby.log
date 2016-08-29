@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon Aug 29 15:13:19 PDT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0156-d85d-2ac0-000003523c28 
+on database directory C:\Users\Krame\Documents\GitHub\Stock_Option\kramer.jeff.stock.option\StockDB with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
+Loaded from file:/C:/Java%20Files/kramer.jeff.stock.option/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_101-b13
+user.dir=C:\Users\Krame\Documents\GitHub\Stock_Option\kramer.jeff.stock.option
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
