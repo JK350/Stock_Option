@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.ResultSet;
-import java.util.*;
 
 /**
  * This class is used to initialize the database connection
@@ -15,21 +14,6 @@ import java.util.*;
 */
 
 public class DatabaseInitializer {
-	private static final String DB_URL = "jdbc:derby:StockDB;create=true";
-	private static final String JDBC_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-	private static final String SCHEMA = "STOCKOPTIONS";
-	private static final String USER = "JKramer";
-	private static final String PASSWORD = "123abc456";
-	private static final String[] TABLES = {"STOCK", "PRICES", "TRANSACTIONS"};
-	private static final HashMap<String, String> TABLE_CREATION_QUERIES = new HashMap<String, String>();
-	
-	//static block to populate the TABLE_CREATION_QUERIES constanct with the queries for each of the tables
-	static{
-		TABLE_CREATION_QUERIES.put("STOCKS", "CREATE TABLE " + SCHEMA + ".STOCK(Symbol VARCHAR(8) NOT NULL,Name VARCHAR(256) NOT NULL,Annual_Div_Rate FLOAT NOT NULL,Account INTEGER NOT NULL,PRIMARY KEY (Symbol))"
-				);
-		TABLE_CREATION_QUERIES.put("PRICES", "CREATE TABLE " + SCHEMA + ".PRICES(Symbol VARCHAR(8) NOT NULL,Date DATE NOT NULL,Price DECIMAL(7,2) NOT NULL,PRIMARY KEY (Symbol, Date, Price))");
-		TABLE_CREATION_QUERIES.put("TRANSACTIONS", "CREATE TABLE " +  SCHEMA + ".TRANSACTIONS(Symbol VARCHAR(8) NOT NULL,Date DATE NOT NULL,Action INTEGER NOT NULL,Price DECIMAL(7,2),Net DECIMAL(8,2),PRIMARY KEY(Symbol, Date, Action, Price))");	
-	}
 	
 	private static Connection conn = null;
 	private static Statement stmt = null;
@@ -49,8 +33,8 @@ public class DatabaseInitializer {
 	 */
 	private static void createConnection(){
 		try{
-			Class.forName(JDBC_DRIVER);
-			conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+			Class.forName(Constants.JDBC_DRIVER);
+			conn = DriverManager.getConnection(Constants.DB_URL, Constants.USER, Constants.PASSWORD);
 		} catch (Exception ex){
 			ex.printStackTrace();
 		}
@@ -67,8 +51,8 @@ public class DatabaseInitializer {
 			rs = conn.getMetaData().getSchemas();
 
 			while(rs.next()){
-				if (rs.getString(1).equals(SCHEMA)){
-					System.out.println("Schema " + SCHEMA + " found.");
+				if (rs.getString(1).equals(Constants.SCHEMA)){
+					System.out.println("Schema " + Constants.SCHEMA + " found.");
 					schemaFound = true;
 					break;
 				}
@@ -89,10 +73,10 @@ public class DatabaseInitializer {
 	 * This method creates the schema in the SCHEMA constant.
 	 */
 	private static void createSchema(){
-		System.out.println("Creating schema " + SCHEMA);
+		System.out.println("Creating schema " + Constants.SCHEMA);
 		try{
 			stmt = conn.createStatement();
-			stmt.execute("CREATE SCHEMA " + SCHEMA);
+			stmt.execute("CREATE SCHEMA " + Constants.SCHEMA);
 			stmt.close();
 		} catch (Exception ex){
 			ex.printStackTrace();
@@ -105,9 +89,9 @@ public class DatabaseInitializer {
 	 * If the table does not exist the createTable() method is called passing the table name.
 	 */
 	private static void checkTables(){
-		for(String table : TABLES){
+		for(String table : Constants.TABLES){
 			try{
-				rs = conn.getMetaData().getTables(null, SCHEMA, table, null);
+				rs = conn.getMetaData().getTables(null, Constants.SCHEMA, table, null);
 				
 				if(!rs.next()){
 					System.out.println("Table " + table + " not found");
@@ -129,7 +113,7 @@ public class DatabaseInitializer {
 	 */
 	private static void createTable(String table){
 		System.out.println("Creating table " + table);
-		String query = TABLE_CREATION_QUERIES.get(table);
+		String query = Constants.TABLE_CREATION_QUERIES.get(table);
 		
 		try{
 			stmt = conn.createStatement();
