@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+//import java.sql.SQLException;
 
 public class DatabaseInitializer {
 	private static final String DB_URL = "jdbc:derby:StockDB;create=true";
@@ -16,11 +16,11 @@ public class DatabaseInitializer {
 	private static Connection conn = null;
 	private static Statement stmt = null;
 	private static ResultSet rs = null;
-	private final String[] tables = {"STOCK", "PRICE", "TRANSACTIONS"};
+	//private final String[] tables = {"STOCK", "PRICE", "TRANSACTIONS"};
 	
 	public void startDB(){
+		System.setProperty("derby.system.home", "C:\\Derby\\Databases");
 		createConnection();
-		
 		if (conn != null){
 			checkSchema();
 		}
@@ -33,8 +33,7 @@ public class DatabaseInitializer {
 		} catch (Exception ex){
 			ex.printStackTrace();
 		}
-	}
-	
+	}	
 	
 	private static void checkSchema(){
 		try{
@@ -44,6 +43,7 @@ public class DatabaseInitializer {
 
 			while(rs.next()){
 				if (rs.getString(1).equals(SCHEMA)){
+					System.out.println("Schema found.");
 					schemaFound = true;
 					break;
 				}
@@ -83,7 +83,7 @@ public class DatabaseInitializer {
 		}
 	}
 	
-	private static void deleteSchema(){
+/*	private static void deleteSchema(){
 		try{
 			stmt = conn.createStatement();
 			stmt.execute("DROP SCHEMA " + SCHEMA + " RESTRICT");
@@ -96,5 +96,5 @@ public class DatabaseInitializer {
 				ex.printStackTrace();
 			}
 		}
-	}
+	}*/
 }
