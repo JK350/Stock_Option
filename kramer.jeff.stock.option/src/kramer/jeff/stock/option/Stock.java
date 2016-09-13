@@ -5,16 +5,18 @@ public class Stock {
 	public String compName;
 	public double annualDivRate;
 	public String account;
+	public boolean active;
 	
-	Stock(String s, String cn, Double adr){
-		this(s, cn, adr, "");
+	public Stock(String s, String cn, double adr, int act){
+		this(s, cn, adr, act, "");
 	}
 	
-	Stock(String s, String cn, Double adr, String acc){
+	public Stock(String s, String cn, double adr, int act, String acc){
 		this.symbol = s;
 		this.compName = cn;
 		this.annualDivRate = adr;
 		this.account = acc;
+		this.active = (act == 1) ? true : false;
 	}
 	
 	public String getSymbol(){
@@ -33,12 +35,20 @@ public class Stock {
 		this.compName = cn;
 	}
 	
-	public Double getAnnualDivRate(){
+	public double getAnnualDivRate(){
 		return annualDivRate;
 	}
 	
 	public void setAnnualDivRate(Double adr){
 		this.annualDivRate = adr;
+	}
+	
+	public boolean isActive(){
+		return active;
+	}
+	
+	public void setActive(boolean act){
+		this.active = act;
 	}
 	
 	public String getAccount(){

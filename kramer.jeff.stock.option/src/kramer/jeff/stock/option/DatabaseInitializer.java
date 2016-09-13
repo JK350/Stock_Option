@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * This class is used to initialize the database connection
@@ -16,15 +17,21 @@ import java.sql.ResultSet;
 public class DatabaseInitializer {
 	
 	private static Connection conn = null;
-	private static Statement stmt = null;
-	private static ResultSet rs = null;
+	private Statement stmt = null;
+	private ResultSet rs = null;
 	
-	public void startDB(){
+	public DatabaseInitializer(){
 		createConnection();
 		
 		if (conn != null){
 			checkSchema();
 			checkTables();
+		}
+		
+		try{
+			conn.close();
+		} catch (Exception ex){
+			ex.printStackTrace();
 		}
 	}
 	
@@ -44,7 +51,7 @@ public class DatabaseInitializer {
 	 * This method checks to see if the schema in the SCHEMA constant exists in the database
 	 * If the schema does not exist, the method calls createSchema().
 	 */
-	private static void checkSchema(){
+	private final void checkSchema(){
 		try{
 			boolean schemaFound = false;
 			
@@ -72,7 +79,7 @@ public class DatabaseInitializer {
 	/**
 	 * This method creates the schema in the SCHEMA constant.
 	 */
-	private static void createSchema(){
+	private final void createSchema(){
 		System.out.println("Creating schema " + Constants.SCHEMA);
 		try{
 			stmt = conn.createStatement();
@@ -88,7 +95,7 @@ public class DatabaseInitializer {
 	 * For each table the method checks to see if the table exists in the database.
 	 * If the table does not exist the createTable() method is called passing the table name.
 	 */
-	private static void checkTables(){
+	private final void checkTables(){
 		for(String table : Constants.TABLES){
 			try{
 				rs = conn.getMetaData().getTables(null, Constants.SCHEMA, table, null);
@@ -111,7 +118,7 @@ public class DatabaseInitializer {
 	 * The method will use the table value to pull the query text from TABLE_CREATION_QUERIES HashMap
 	 * @param table
 	 */
-	private static void createTable(String table){
+	private final void createTable(String table){
 		System.out.println("Creating table " + table);
 		String query = Constants.TABLE_CREATION_QUERIES.get(table);
 		
@@ -120,6 +127,27 @@ public class DatabaseInitializer {
 			
 			stmt.execute(query);
 			stmt.close();
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	public Connection getConnection(){
+		return conn;
+	}
+	
+	public final void closeConnection(){
+		try{
+			if(stmt != null){
+				stmt.close();
+			}
+			
+			if(conn != null){
+				DriverManager.getConnection(Constants.DB_URL + ";shutdown=true");
+				conn.close();
+			}
+		} catch (SQLException SQLex){
+			System.out.println("Database successfully closed.");
 		} catch (Exception ex){
 			ex.printStackTrace();
 		}

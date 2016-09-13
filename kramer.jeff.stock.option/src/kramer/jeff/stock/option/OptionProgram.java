@@ -4,6 +4,7 @@ public class OptionProgram {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new DatabaseInitializer().startDB();
+		DatabaseInitializer db = new DatabaseInitializer();
+		db.closeConnection();
 	}
 }

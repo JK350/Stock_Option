@@ -1,5 +1,7 @@
 package kramer.jeff.stock.option;
 
+import java.util.HashMap;
+
 public interface StockDAO {
 	public void insertStock(Stock stock);
 	
@@ -7,7 +9,5 @@ public interface StockDAO {
 	
 	public void deleteStock(Stock stock);
 	
-	public void getAllStocks();
-	
-	public void getStock(Stock stock);
+	public HashMap<String, Stock> getAllStocks();
 }
