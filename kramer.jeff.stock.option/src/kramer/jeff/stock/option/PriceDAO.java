@@ -7,7 +7,7 @@ public interface PriceDAO {
 	
 	public void deletePrice(int priceID, Stock stock);
 	
-	public void getPriceHistoryByStock(Stock stock);
+	public void getStockPriceHistory(Stock stock);
 	
 	public void getFullPriceHistory();
 }

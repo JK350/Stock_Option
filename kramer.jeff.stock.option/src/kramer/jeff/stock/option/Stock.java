@@ -1,6 +1,5 @@
 package kramer.jeff.stock.option;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Stock {
@@ -9,7 +8,7 @@ public class Stock {
 	public double annualDivRate;
 	public String account;
 	public boolean active;
-	public ArrayList<Transaction> transactionHistory;
+	public HashMap<Integer, Transaction> transactionHistory;
 	public HashMap<Integer, Price> priceHistory;
 	
 	public Stock(String s, String cn, double adr, int act){
@@ -64,11 +63,11 @@ public class Stock {
 		this.account = acc;
 	}
 	
-	public void setTransactionHistory(ArrayList<Transaction> t){
+	public void setTransactionHistory(HashMap<Integer, Transaction> t){
 		this.transactionHistory = t;
 	}
 	
-	public ArrayList<Transaction> getTransactionHistory(){
+	public HashMap<Integer, Transaction> getTransactionHistory(){
 		return transactionHistory;
 	}
 	
@@ -83,6 +82,12 @@ public class Stock {
 	public void dropPrice(int priceID){
 		if(!priceHistory.isEmpty()){
 			priceHistory.remove(priceID);
+		}
+	}
+	
+	public void dropTransaction(int transactionID){
+		if(!transactionHistory.isEmpty()){
+			transactionHistory.remove(transactionID);
 		}
 	}
 }

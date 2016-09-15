@@ -3,14 +3,13 @@ package kramer.jeff.stock.option;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
 public class PriceDAOImpl implements PriceDAO {
 
 	private static Connection conn;
-	public String query;
+	private String query;
 	
 	static{
 		DatabaseInitializer dbi = new DatabaseInitializer();
@@ -26,7 +25,7 @@ public class PriceDAOImpl implements PriceDAO {
 	@Override
 	public void insertPrice(Price p) {
 		Statement stmt = null;
-		Date date = Calendar.getInstance().getTime();
+		Date date = p.getDate();
 		String symbol = p.getSymbol();
 		double price = p.getValue();
 		
@@ -86,13 +85,13 @@ public class PriceDAOImpl implements PriceDAO {
 		try{
 			stmt = conn.createStatement();
 			stmt.executeQuery(query);
+			
+			stock.dropPrice(priceID);
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
 			closeStatement(stmt);
 		}
-		
-		stock.dropPrice(priceID);
 	}
 
 	/**
@@ -102,7 +101,7 @@ public class PriceDAOImpl implements PriceDAO {
 	 * @param stock
 	 */
 	@Override
-	public void getPriceHistoryByStock(Stock stock) {
+	public void getStockPriceHistory(Stock stock) {
 		Statement stmt = null;
 		HashMap<Integer, Price> priceMap = new HashMap<Integer, Price>();
 		Price p;
@@ -116,7 +115,7 @@ public class PriceDAOImpl implements PriceDAO {
 			ResultSet rs = stmt.executeQuery(query);
 			
 			while(rs.next()){
-				p = new Price(rs.getInt("Price_ID"), rs.getString("Symbol"), rs.getDate("Date"), rs.getDouble("price"));
+				p = new Price(rs.getInt("Price_ID"), rs.getString("Symbol"), rs.getDate("Date"), rs.getDouble("Price"));
 				priceMap.put(p.getPriceID(), p);
 			}
 		} catch (Exception ex){

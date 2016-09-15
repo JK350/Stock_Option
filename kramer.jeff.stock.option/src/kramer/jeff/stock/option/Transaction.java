@@ -4,10 +4,11 @@ import java.util.Date;
 
 public class Transaction {
 	public Date transDate;
-	public String action;
+	public int action;
 	public double price;
 	public double net;
 	public int transactionID;
+	public String stock;
 	
 	/**
 	 * @param tID
@@ -16,7 +17,8 @@ public class Transaction {
 	 * @param price
 	 * @param net
 	 */
-	public Transaction(int tID, Date tDate, String action, double price, double net) {
+	public Transaction(String s, int tID, Date tDate, int action, double price, double net) {
+		this.stock = s;
 		this.transDate = tDate;
 		this.action = action;
 		this.price = price;
@@ -24,6 +26,14 @@ public class Transaction {
 		this.transactionID = tID;
 	}
 
+	public String getStock(){
+		return stock;
+	}
+	
+	public void setStock(String s){
+		this.stock = s;
+	}
+	
 	public Date getTransDate() {
 		return transDate;
 	}
@@ -32,11 +42,11 @@ public class Transaction {
 		this.transDate = transDate;
 	}
 	
-	public String getAction() {
+	public int getAction() {
 		return action;
 	}
 	
-	public void setAction(String action) {
+	public void setAction(int action) {
 		this.action = action;
 	}
 	
