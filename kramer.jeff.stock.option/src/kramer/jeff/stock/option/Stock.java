@@ -1,11 +1,16 @@
 package kramer.jeff.stock.option;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Stock {
 	public String symbol;
 	public String compName;
 	public double annualDivRate;
 	public String account;
 	public boolean active;
+	public ArrayList<Transaction> transactionHistory;
+	public HashMap<Integer, Price> priceHistory;
 	
 	public Stock(String s, String cn, double adr, int act){
 		this(s, cn, adr, act, "");
@@ -57,5 +62,27 @@ public class Stock {
 	
 	public void setAccount(String acc){
 		this.account = acc;
+	}
+	
+	public void setTransactionHistory(ArrayList<Transaction> t){
+		this.transactionHistory = t;
+	}
+	
+	public ArrayList<Transaction> getTransactionHistory(){
+		return transactionHistory;
+	}
+	
+	public void setPriceHistory(HashMap<Integer, Price> p){
+		this.priceHistory = p;
+	}
+	
+	public HashMap<Integer, Price> getPriceHistory(){
+		return priceHistory;
+	}
+	
+	public void dropPrice(int priceID){
+		if(!priceHistory.isEmpty()){
+			priceHistory.remove(priceID);
+		}
 	}
 }

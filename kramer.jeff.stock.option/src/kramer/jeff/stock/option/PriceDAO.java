@@ -5,5 +5,9 @@ public interface PriceDAO {
 	
 	public void updatePrice(Price price);
 	
-	public void getPriceHistory(Stock stock);
+	public void deletePrice(int priceID, Stock stock);
+	
+	public void getPriceHistoryByStock(Stock stock);
+	
+	public void getFullPriceHistory();
 }

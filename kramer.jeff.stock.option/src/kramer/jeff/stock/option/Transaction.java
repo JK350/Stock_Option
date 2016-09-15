@@ -7,18 +7,21 @@ public class Transaction {
 	public String action;
 	public double price;
 	public double net;
+	public int transactionID;
 	
 	/**
-	 * @param transDate
+	 * @param tID
+	 * @param tDate
 	 * @param action
 	 * @param price
 	 * @param net
 	 */
-	public Transaction(Date transDate, String action, double price, double net) {
-		this.transDate = transDate;
+	public Transaction(int tID, Date tDate, String action, double price, double net) {
+		this.transDate = tDate;
 		this.action = action;
 		this.price = price;
 		this.net = net;
+		this.transactionID = tID;
 	}
 
 	public Date getTransDate() {
@@ -51,5 +54,9 @@ public class Transaction {
 	
 	public void setNet(double net) {
 		this.net = net;
+	}
+	
+	public int getTransactionID(){
+		return transactionID;
 	}
 }

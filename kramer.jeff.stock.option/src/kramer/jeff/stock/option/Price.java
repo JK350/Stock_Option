@@ -5,17 +5,20 @@ import java.util.Date;
 public class Price {
 	public String symbol;
 	public Date date;
-	public double price;
+	public double value;
+	public int priceID;
 	
 	/**
+	 * @param priceID
 	 * @param symbol
 	 * @param date
 	 * @param price
 	 */
-	public Price(String symbol, Date date, double price) {
-		this.symbol = symbol;
-		this.date = date;
-		this.price = price;
+	public Price(int pID, String s, Date d, double v) {
+		this.priceID = pID;
+		this.symbol = s;
+		this.date = d;
+		this.value = v;
 	}
 
 	public String getSymbol() {
@@ -34,11 +37,15 @@ public class Price {
 		this.date = date;
 	}
 	
-	public double getPrice() {
-		return price;
+	public double getValue() {
+		return value;
 	}
 	
-	public void setPrice(double price) {
-		this.price = price;
+	public void setPrice(double v) {
+		this.value = v;
+	}
+	
+	public int getPriceID(){
+		return priceID;
 	}
 }

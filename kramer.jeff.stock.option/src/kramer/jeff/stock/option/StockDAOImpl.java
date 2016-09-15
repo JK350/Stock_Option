@@ -2,7 +2,6 @@ package kramer.jeff.stock.option;
 
 import java.sql.Connection;
 import java.sql.Statement;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
@@ -23,16 +22,21 @@ public class StockDAOImpl implements StockDAO{
 	 */
 	@Override
 	public void insertStock(Stock stock) {
+		String symbol = stock.getSymbol();
+		String companyName = stock.getCompanyName();
+		double annualDivRate = stock.getAnnualDivRate();
+		Statement stmt = null;
+		
 		String query = "INSERT INTO " + Constants.SCHEMA + ".STOCK" + 
-				" VALUES(?, ?, ?, 1)";
+				" VALUES(" + symbol + ", " + companyName + ", " + annualDivRate + ", 1)";
+				
 		try{
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, stock.getSymbol());
-			pstmt.setString(2, stock.getCompanyName());
-			pstmt.setDouble(3, stock.getAnnualDivRate());
-			pstmt.executeUpdate();
+			stmt = conn.createStatement();
+			stmt.executeQuery(query);
 		} catch (Exception ex){
 			ex.printStackTrace();
+		} finally {
+			closeStatement(stmt);
 		}
 	}
 
@@ -44,16 +48,21 @@ public class StockDAOImpl implements StockDAO{
 	 */
 	@Override
 	public void updateStock(Stock stock) {
+		Statement stmt = null;
+		String companyName = stock.getCompanyName();
+		double annualDivRate = stock.getAnnualDivRate();
+		String symbol = stock.getSymbol();
+		
 		String query = "UPDATE " + Constants.SCHEMA + ".STOCK" +
-				"SET Name = ?, Annual_Div_Rate = ?" + 
-				"WHERE Symbol = ?";
+				"SET Name=" + companyName + ",Annual_Div_Rate = " + annualDivRate + 
+				"WHERE Symbol=" + symbol;
 		try{
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, stock.getCompanyName());
-			pstmt.setDouble(2, stock.getAnnualDivRate());
-			pstmt.setString(3, stock.getSymbol());
+			stmt = conn.createStatement();
+			stmt.executeQuery(query);
 		} catch (Exception ex){
 			ex.printStackTrace();
+		} finally {
+			closeStatement(stmt);
 		}
 		
 	}
