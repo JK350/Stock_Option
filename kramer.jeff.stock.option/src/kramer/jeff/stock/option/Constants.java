@@ -19,8 +19,7 @@ public final class Constants {
 		TABLE_CREATION_QUERIES.put("STOCKS", "CREATE TABLE " + SCHEMA + ".STOCK("
 				+ "Symbol VARCHAR(8) NOT NULL,"
 				+ "Name VARCHAR(256) NOT NULL,"
-				+ "Annual_Div_Rate FLOAT NOT NULL,"
-				+ "Account INTEGER NOT NULL,"
+				+ "Annual_Div_Rate FLOAT NOT NULL,"	
 				+ "Active INTEGER NOT NULL,"
 				+ "PRIMARY KEY (Symbol))");
 		TABLE_CREATION_QUERIES.put("PRICES", "CREATE TABLE " + SCHEMA + ".PRICES("

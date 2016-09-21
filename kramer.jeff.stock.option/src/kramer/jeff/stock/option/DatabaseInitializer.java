@@ -16,29 +16,28 @@ import java.sql.SQLException;
 
 public class DatabaseInitializer {
 	
-	private static Connection conn = null;
+	private Connection conn = null;
 	private Statement stmt = null;
 	private ResultSet rs = null;
 	
-	public DatabaseInitializer(){
-		createConnection();
-		
-		if (conn != null){
-			checkSchema();
-			checkTables();
-		}
-		
-		try{
-			conn.close();
-		} catch (Exception ex){
-			ex.printStackTrace();
+	/**
+	 * Method runs at start up to ensure all the proper tables are created.
+	 */
+	public final void startUp(){
+		if(conn == null){
+			createConnection();
+			
+			if (conn != null){
+				checkSchema();
+				checkTables();
+			}
 		}
 	}
 	
 	/**
 	 * This methods creates the connection to the database
 	 */
-	private static void createConnection(){
+	private void createConnection(){
 		try{
 			Class.forName(Constants.JDBC_DRIVER);
 			conn = DriverManager.getConnection(Constants.DB_URL, Constants.USER, Constants.PASSWORD);

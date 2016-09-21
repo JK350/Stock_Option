@@ -1,18 +1,13 @@
 package kramer.jeff.stock.option;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class StockDAOImpl implements StockDAO{
-	
-	private static Connection conn;
-	
-	static{
-		DatabaseInitializer dbi = new DatabaseInitializer();
-		conn = dbi.getConnection();
-	}
 	
 	/**
 	 * Method to insert a new stock into the database.
@@ -22,21 +17,31 @@ public class StockDAOImpl implements StockDAO{
 	 */
 	@Override
 	public void insertStock(Stock stock) {
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
 		String symbol = stock.getSymbol();
 		String companyName = stock.getCompanyName();
 		double annualDivRate = stock.getAnnualDivRate();
-		Statement stmt = null;
+		PreparedStatement pstmt = null;
 		
-		String query = "INSERT INTO " + Constants.SCHEMA + ".STOCK" + 
-				" VALUES(" + symbol + ", " + companyName + ", " + annualDivRate + ", 1)";
-				
+		String query = "INSERT INTO " + Constants.SCHEMA + ".STOCK (Symbol, Name, Annual_Div_Rate, Active)" + 
+				" VALUES(?, ?, ?, 1)";
+						
 		try{
-			stmt = conn.createStatement();
-			stmt.executeQuery(query);
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, symbol);
+			pstmt.setString(2, companyName);
+			pstmt.setDouble(3, annualDivRate);
+			
+			pstmt.executeUpdate();
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
-			closeStatement(stmt);
+			closeStatement(pstmt);
 		}
 	}
 
@@ -48,21 +53,31 @@ public class StockDAOImpl implements StockDAO{
 	 */
 	@Override
 	public void updateStock(Stock stock) {
-		Statement stmt = null;
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		PreparedStatement pstmt = null;
 		String companyName = stock.getCompanyName();
 		double annualDivRate = stock.getAnnualDivRate();
 		String symbol = stock.getSymbol();
 		
-		String query = "UPDATE " + Constants.SCHEMA + ".STOCK" +
-				"SET Name=" + companyName + ",Annual_Div_Rate = " + annualDivRate + 
-				"WHERE Symbol=" + symbol;
+		String query = "UPDATE " + Constants.SCHEMA + ".STOCK "
+				+ "SET Name = ?, Annual_Div_Rate = ?"
+				+ "WHERE Symbol = ?";
 		try{
-			stmt = conn.createStatement();
-			stmt.executeQuery(query);
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, companyName);
+			pstmt.setDouble(2, annualDivRate);
+			pstmt.setString(3, symbol);
+			
+			pstmt.executeUpdate();
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
-			closeStatement(stmt);
+			closeStatement(pstmt);
 		}
 		
 	}
@@ -74,19 +89,30 @@ public class StockDAOImpl implements StockDAO{
 	 * @param stock
 	 */
 	@Override
-	public void deleteStock(Stock stock) {
-		String query = "UPDATE " + Constants.SCHEMA + ".STOCK" +
-				"SET Active = 0 " +
-				"WHERE Symbol = " + stock.getSymbol();
-		Statement stmt = null;
+	public void deactivateStock(Stock stock) {
+		Connection conn = null;
 		
 		try{
-			stmt = conn.createStatement();
-			stmt.executeQuery(query);
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		PreparedStatement pstmt = null;
+		String symbol = stock.getSymbol();
+		
+		String query = "UPDATE " + Constants.SCHEMA + ".STOCK " +
+				"SET Active = 0 " +
+				"WHERE Symbol = ?";
+		
+		try{
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, symbol);
+			pstmt.executeUpdate();
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
-			closeStatement(stmt);
+			closeStatement(pstmt);
 		}
 		
 	}
@@ -98,8 +124,14 @@ public class StockDAOImpl implements StockDAO{
 	 * @return HashMap<String, Stock>
 	 */
 	@Override
-	public HashMap<String, Stock> getAllStocks() {
-		HashMap<String, Stock> allStocks = new HashMap<String, Stock>();
+	public LinkedHashMap<String, Stock> getAllStocks() {
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		LinkedHashMap<String, Stock> allStocks = new LinkedHashMap<String, Stock>();
 		String query = "SELECT * FROM " + Constants.SCHEMA + ".STOCK " +
 				"ORDER BY Symbol";
 		
@@ -127,6 +159,10 @@ public class StockDAOImpl implements StockDAO{
 		}
 		
 		return allStocks;
+	}
+	
+	public void deleteStock(Stock stock){
+		
 	}
 
 	/**
