@@ -188,7 +188,45 @@ public class StockDAOImplTest{
 
 	@Test
 	public void testDeleteStock(){
-		fail("Not yet implemented");
+		DatabaseInitializer dbi = new DatabaseInitializer();
+		dbi.startUp();
+		StockDAOImpl sImpl = new StockDAOImpl();
+		Connection conn = dbi.getConnection();
+		String query;
+		
+		Stock s1 = new Stock("KO", "The Coca-Cola Co.", 0.89, 1);
+		Stock s2 = new Stock("GOOGL", "Alphabet Inc Class A", 0.58, 1);
+		
+		query = "INSERT INTO STOCKOPTIONS.STOCK VALUES ('GOOGL', 'Alphabet Inc Class A', 0.58, 1), "
+				+ "('KO', 'The Coca-Cola Co.', 0.89, 1)";
+		
+		execute(query, conn);
+		
+		sImpl.deleteStock(s1);
+		
+		query = "SELECT * FROM STOCKOPTIONS.STOCK";
+		
+		try{
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			
+			int i = 0;
+			while(rs.next()){
+				assertEquals(s2.getSymbol(), rs.getString("Symbol"));
+				i++;
+			}
+			
+			assertEquals(1, i);
+			
+			stmt.close();
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		query = "DELETE FROM STOCKOPTIONS.STOCK";
+		execute(query, conn);
+		
+		dbi.closeConnection();
 	}
 	
 	private void execute(String query, Connection conn){

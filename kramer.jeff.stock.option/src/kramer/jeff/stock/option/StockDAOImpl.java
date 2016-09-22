@@ -162,7 +162,27 @@ public class StockDAOImpl implements StockDAO{
 	}
 	
 	public void deleteStock(Stock stock){
+		Connection conn = null;
 		
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		String query = "DELETE FROM " + Constants.SCHEMA + ".STOCK "
+				+ "WHERE Symbol = ?";
+		PreparedStatement pstmt = null;
+		
+		try{
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, stock.getSymbol());
+			pstmt.executeUpdate();
+		} catch (Exception ex){
+			ex.printStackTrace();
+		} finally {
+			closeStatement(pstmt);
+		}
 	}
 
 	/**
