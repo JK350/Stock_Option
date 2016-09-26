@@ -3,7 +3,7 @@ package kramer.jeff.stock.option;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class TransactionDAOImpl implements TransactionDAO {
 
@@ -87,7 +87,7 @@ public class TransactionDAOImpl implements TransactionDAO {
 	public void getStockTransactionHistory(Stock stock) {
 		// TODO Auto-generated method stub
 		Statement stmt = null;
-		HashMap<Integer, Transaction> transactionMap = new HashMap<Integer, Transaction>();
+		LinkedHashMap<Integer, Transaction> transactionMap = new LinkedHashMap<Integer, Transaction>();
 		Transaction t;
 		String query = "SELECT * "
 				+ "FROM " + Constants.SCHEMA +".TRANSACTIONS "

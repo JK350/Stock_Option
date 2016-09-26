@@ -1,20 +1,14 @@
 package kramer.jeff.stock.option;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class PriceDAOImpl implements PriceDAO {
-
-	private static Connection conn;
-	private String query;
-	
-	static{
-		DatabaseInitializer dbi = new DatabaseInitializer();
-		conn = dbi.getConnection();
-	}
 	
 	/**
 	 * Method inserts new a new price value for a given stock
@@ -24,21 +18,31 @@ public class PriceDAOImpl implements PriceDAO {
 	 */
 	@Override
 	public void insertPrice(Price p) {
-		Statement stmt = null;
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		PreparedStatement pstmt = null;
 		Date date = p.getDate();
 		String symbol = p.getSymbol();
 		double price = p.getValue();
 		
-		query = "INSERT INTO " + Constants.SCHEMA + ".PRICES"
-				+ " VALUES(" + symbol + ", " + date + ", " + price + ")";
+		String query = "INSERT INTO " + Constants.SCHEMA + ".PRICES (Symbol, Date, Price)"
+				+ " VALUES(?, ?, ?)";
 		
 		try{
-			stmt = conn.createStatement();
-			stmt.executeQuery(query);
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, symbol);
+			pstmt.setDate(2, new java.sql.Date(date.getTime()));
+			pstmt.setDouble(3, price);
+			pstmt.executeUpdate();
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
-			closeStatement(stmt);
+			closeStatement(pstmt);
 		}
 	}
 	
@@ -50,23 +54,34 @@ public class PriceDAOImpl implements PriceDAO {
 	 */
 	@Override
 	public void updatePrice(Price p) {
-		Statement stmt = null;
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		PreparedStatement pstmt = null;
 		Date date = p.getDate();
 		String symbol = p.getSymbol();
 		double price = p.getValue();
 		int pID = p.getPriceID();
 		
-		query = "UPDATE " + Constants.SCHEMA + ".PRICES"
-				+ "SET Symbol = " + symbol + ",Date = " + date + ",Price = " + price
-				+ "WHERE Price_ID = " + pID;
+		String query = "UPDATE " + Constants.SCHEMA + ".PRICES "
+				+ "SET Symbol = ?, Date = ?, Price = ? "
+				+ "WHERE Price_ID = ?";
 		
 		try{
-			stmt = conn.createStatement();
-			stmt.executeQuery(query);
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, symbol);
+			pstmt.setDate(2, new java.sql.Date(date.getTime()));
+			pstmt.setDouble(3, price);
+			pstmt.setInt(4, pID);
+			pstmt.executeUpdate();
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
-			closeStatement(stmt);
+			closeStatement(pstmt);
 		}
 	}
 
@@ -78,19 +93,29 @@ public class PriceDAOImpl implements PriceDAO {
 	 * @param stock
 	 */
 	@Override
-	public void deletePrice(int priceID, Stock stock) {
-		Statement stmt = null;
-		query = "DELETE FROM " + Constants.SCHEMA + ".PRICES "
-				+ "WHERE Price_ID = " + priceID;
+	public void deletePrice(Price price, Stock stock) {
+		Connection conn = null;
+		int priceID = price.getPriceID();
+		
 		try{
-			stmt = conn.createStatement();
-			stmt.executeQuery(query);
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		PreparedStatement pstmt = null;
+		String query = "DELETE FROM " + Constants.SCHEMA + ".PRICES "
+				+ "WHERE Price_ID = ?";
+		try{
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, priceID);
+			pstmt.executeUpdate();
 			
 			stock.dropPrice(priceID);
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
-			closeStatement(stmt);
+			closeStatement(pstmt);
 		}
 	}
 
@@ -101,18 +126,26 @@ public class PriceDAOImpl implements PriceDAO {
 	 * @param stock
 	 */
 	@Override
-	public void getStockPriceHistory(Stock stock) {
-		Statement stmt = null;
-		HashMap<Integer, Price> priceMap = new HashMap<Integer, Price>();
+	public LinkedHashMap<Integer, Price> getStockPriceHistory(Stock stock) {
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		PreparedStatement pstmt = null;
+		LinkedHashMap<Integer, Price> priceMap = new LinkedHashMap<Integer, Price>();
 		Price p;
-		query = "SELECT * "
+		String query = "SELECT * "
 				+ "FROM " + Constants.SCHEMA + ".PRICES "
-				+ "WHERE Symbol = " + stock.getSymbol()
+				+ "WHERE Symbol = ? "
 				+ "ORDER BY Date DESC";
 		
 		try{
-			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, stock.getSymbol());
+			ResultSet rs = pstmt.executeQuery();
 			
 			while(rs.next()){
 				p = new Price(rs.getInt("Price_ID"), rs.getString("Symbol"), rs.getDate("Date"), rs.getDouble("Price"));
@@ -121,16 +154,10 @@ public class PriceDAOImpl implements PriceDAO {
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
-			closeStatement(stmt);
+			closeStatement(pstmt);
 		}
 		
-		stock.setPriceHistory(priceMap);
-	}
-
-	@Override
-	public void getFullPriceHistory() {
-		// TODO Auto-generated method stub
-
+		return priceMap;
 	}
 
 	/**

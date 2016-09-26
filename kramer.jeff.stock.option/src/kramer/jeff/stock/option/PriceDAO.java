@@ -1,13 +1,13 @@
 package kramer.jeff.stock.option;
 
+import java.util.LinkedHashMap;
+
 public interface PriceDAO {
 	public void insertPrice(Price price);
 	
 	public void updatePrice(Price price);
 	
-	public void deletePrice(int priceID, Stock stock);
+	public void deletePrice(Price price, Stock stock);
 	
-	public void getStockPriceHistory(Stock stock);
-	
-	public void getFullPriceHistory();
+	public LinkedHashMap<Integer, Price> getStockPriceHistory(Stock stock);
 }

@@ -1,6 +1,6 @@
 package kramer.jeff.stock.option;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Stock {
 	public String symbol;
@@ -8,8 +8,8 @@ public class Stock {
 	public double annualDivRate;
 	public String account;
 	public boolean active;
-	public HashMap<Integer, Transaction> transactionHistory;
-	public HashMap<Integer, Price> priceHistory;
+	public LinkedHashMap<Integer, Transaction> transactionHistory;
+	public LinkedHashMap<Integer, Price> priceHistory;
 	
 	public Stock(String s, String cn, double adr, int act){
 		this(s, cn, adr, act, "");
@@ -63,19 +63,19 @@ public class Stock {
 		this.account = acc;
 	}
 	
-	public void setTransactionHistory(HashMap<Integer, Transaction> t){
+	public void setTransactionHistory(LinkedHashMap<Integer, Transaction> t){
 		this.transactionHistory = t;
 	}
 	
-	public HashMap<Integer, Transaction> getTransactionHistory(){
+	public LinkedHashMap<Integer, Transaction> getTransactionHistory(){
 		return transactionHistory;
 	}
 	
-	public void setPriceHistory(HashMap<Integer, Price> p){
+	public void setPriceHistory(LinkedHashMap<Integer, Price> p){
 		this.priceHistory = p;
 	}
 	
-	public HashMap<Integer, Price> getPriceHistory(){
+	public LinkedHashMap<Integer, Price> getPriceHistory(){
 		return priceHistory;
 	}
 	
