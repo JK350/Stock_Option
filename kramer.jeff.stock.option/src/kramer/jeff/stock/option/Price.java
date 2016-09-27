@@ -20,6 +20,12 @@ public class Price {
 		this.date = d;
 		this.value = v;
 	}
+	
+	public Price(String s, Date d, double v){
+		this.symbol = s;
+		this.date = d;
+		this.value = v;
+	}
 
 	public String getSymbol() {
 		return symbol;
@@ -47,5 +53,9 @@ public class Price {
 	
 	public int getPriceID(){
 		return priceID;
+	}
+	
+	public void setPriceID(int pID){
+		this.priceID = pID;
 	}
 }

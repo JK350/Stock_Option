@@ -25,6 +25,21 @@ public class Transaction {
 		this.net = net;
 		this.transactionID = tID;
 	}
+	
+	/**
+	 * @param tID
+	 * @param tDate
+	 * @param action
+	 * @param price
+	 * @param net
+	 */
+	public Transaction(String s, Date tDate, int action, double price, double net) {
+		this.stock = s;
+		this.transDate = tDate;
+		this.action = action;
+		this.price = price;
+		this.net = net;
+	}
 
 	public String getStock(){
 		return stock;
@@ -68,5 +83,9 @@ public class Transaction {
 	
 	public int getTransactionID(){
 		return transactionID;
+	}
+	
+	public void setTransactionID(int tID){
+		this.transactionID = tID;
 	}
 }

@@ -59,6 +59,7 @@ public class PriceDAOImplTest {
 				assertEquals(calStock.MONTH, calDB.MONTH);
 				assertEquals(calStock.DATE, calDB.DATE);
 				assertEquals(pArray[i].getValue(), rs.getDouble("Price"), 0);
+				assertEquals(pArray[i].getPriceID(), rs.getInt("Price_ID"));
 				
 				i++;
 			}

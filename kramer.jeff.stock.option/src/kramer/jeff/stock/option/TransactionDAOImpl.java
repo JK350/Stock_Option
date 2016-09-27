@@ -1,18 +1,13 @@
 package kramer.jeff.stock.option;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.LinkedHashMap;
 
 public class TransactionDAOImpl implements TransactionDAO {
-
-	private static Connection conn;
-
-	static{
-		DatabaseInitializer dbi = new DatabaseInitializer();
-		conn = dbi.getConnection();
-	}
 	
 	/**
 	 * Method to insert new transactions into the database
@@ -22,17 +17,36 @@ public class TransactionDAOImpl implements TransactionDAO {
 	 */
 	@Override
 	public void insertTransaction(Transaction t) {
-		Statement stmt = null;
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		PreparedStatement pstmt = null;
 		String query = "INSERT INTO " + Constants.SCHEMA + ".TRANSACTIONS (Symbol, Date, Action, Price, Net)"
-				+ "VALUES(" + t.getStock() + "," + t.getTransDate() + "," + t.getAction() + "," + t.getPrice() + "," + t.getNet() + ")";
+				+ "VALUES(?, ?, ?, ?, ?)";
 		
 		try{
-			stmt = conn.createStatement();
-			stmt.executeQuery(query);
+			pstmt = conn.prepareStatement(query, new String[] {"TRANSACTION_ID"});
+			pstmt.setString(1, t.getStock());
+			pstmt.setDate(2, new java.sql.Date(t.getTransDate().getTime()));
+			pstmt.setInt(3, t.getAction());
+			pstmt.setDouble(4, t.getPrice());
+			pstmt.setDouble(5, t.getNet());
+			
+			pstmt.executeUpdate();
+			
+			ResultSet rs = pstmt.getGeneratedKeys();
+			
+			if(rs.next()){
+				t.setTransactionID(rs.getInt(1));
+			}
 		} catch (Exception ex){
 			
 		} finally {
-			closeStatement(stmt);
+			closeStatement(pstmt);
 		}
 	}
 
@@ -44,18 +58,31 @@ public class TransactionDAOImpl implements TransactionDAO {
 	 */
 	@Override
 	public void updateTransaction(Transaction t) {
-		Statement stmt = null;
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		PreparedStatement pstmt = null;
 		String query = "UPDATE " + Constants.SCHEMA + ".TRANSACTIONS "
-				+ "SET Stock = " + t.getStock() + ", Date =" + t.getTransDate() + ", Action = " + t.getAction() + ", Price = " + t.getPrice() + ", Net = " + t.getNet()
-				+ "WHERE Transaction_ID = " + t.getTransactionID();
+				+ "SET Symbol = ?, Date = ?, Action = ?, Price = ?, Net = ?"
+				+ "WHERE Transaction_ID = ?";
 		
 		try{
-			stmt = conn.createStatement();
-			stmt.executeQuery(query);
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, t.getStock());
+			pstmt.setDate(2, new java.sql.Date(t.getTransDate().getTime()));
+			pstmt.setInt(3, t.getAction());
+			pstmt.setDouble(4, t.getPrice());
+			pstmt.setDouble(5, t.getNet());
+			pstmt.setInt(6, t.getTransactionID());
+			pstmt.executeUpdate();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			closeStatement(stmt);
+			closeStatement(pstmt);
 		}
 	}
 
@@ -67,47 +94,66 @@ public class TransactionDAOImpl implements TransactionDAO {
 	 */
 	@Override
 	public void deleteTransaction(Transaction t, Stock s) {
-		Statement stmt = null;
-		String query = "DELETE FROM " + Constants.SCHEMA + ".TRANSACTIONS"
-				+ "WHERE Transaction_ID = " + t.getTransactionID();
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		PreparedStatement pstmt = null;
+		String query = "DELETE FROM " + Constants.SCHEMA + ".TRANSACTIONS "
+				+ "WHERE Transaction_ID = ?";
 		
 		try{
-			stmt = conn.createStatement();
-			stmt.executeQuery(query);
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, t.getTransactionID());
 			
+			pstmt.executeUpdate();			
 			s.dropTransaction(t.getTransactionID());
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
-			closeStatement(stmt);
+			closeStatement(pstmt);
 		}
 	}
 
 	@Override
-	public void getStockTransactionHistory(Stock stock) {
-		// TODO Auto-generated method stub
-		Statement stmt = null;
-		LinkedHashMap<Integer, Transaction> transactionMap = new LinkedHashMap<Integer, Transaction>();
+	public LinkedHashMap<Integer, Transaction> getStockTransactionHistory(Stock stock) {
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
 		Transaction t;
+		LinkedHashMap<Integer, Transaction> transactionMap = new LinkedHashMap<Integer, Transaction>();
+		PreparedStatement pstmt = null;
+		
 		String query = "SELECT * "
 				+ "FROM " + Constants.SCHEMA +".TRANSACTIONS "
-				+ "WHERE Symbol = " + stock.getSymbol();
+				+ "WHERE Symbol = ? "
+				+ "ORDER BY Date DESC";
 		
 		try{
-			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, stock.getSymbol());
+			
+			ResultSet rs = pstmt.executeQuery();
 			
 			while(rs.next()){
 				t = new Transaction(rs.getString("Symbol"), rs.getInt("Transaction_ID"), rs.getDate("Date"), rs.getInt("Action"), rs.getDouble("Price"), rs.getDouble("Net"));
 				transactionMap.put(t.getTransactionID(), t);
 			}
 			
-			stock.setTransactionHistory(transactionMap);
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
-			closeStatement(stmt);
+			closeStatement(pstmt);
 		}
+		
+		return transactionMap;
 	}
 
 	/**

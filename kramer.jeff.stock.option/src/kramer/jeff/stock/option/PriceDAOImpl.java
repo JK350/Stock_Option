@@ -34,11 +34,17 @@ public class PriceDAOImpl implements PriceDAO {
 				+ " VALUES(?, ?, ?)";
 		
 		try{
-			pstmt = conn.prepareStatement(query);
+			pstmt = conn.prepareStatement(query, new String[] {"PRICE_ID"});
 			pstmt.setString(1, symbol);
 			pstmt.setDate(2, new java.sql.Date(date.getTime()));
 			pstmt.setDouble(3, price);
 			pstmt.executeUpdate();
+			
+			ResultSet rs = pstmt.getGeneratedKeys();
+			if(rs.next()){
+				p.setPriceID(rs.getInt(1));
+			}
+			
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
