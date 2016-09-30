@@ -18,13 +18,7 @@ public class PriceDAOImpl implements PriceDAO {
 	 */
 	@Override
 	public void insertPrice(Price p) {
-		Connection conn = null;
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
+		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		Date date = p.getDate();
 		String symbol = p.getSymbol();
@@ -60,13 +54,7 @@ public class PriceDAOImpl implements PriceDAO {
 	 */
 	@Override
 	public void updatePrice(Price p) {
-		Connection conn = null;
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
+		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		Date date = p.getDate();
 		String symbol = p.getSymbol();
@@ -100,15 +88,8 @@ public class PriceDAOImpl implements PriceDAO {
 	 */
 	@Override
 	public void deletePrice(Price price, Stock stock) {
-		Connection conn = null;
+		Connection conn = getConnection();
 		int priceID = price.getPriceID();
-		
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
 		PreparedStatement pstmt = null;
 		String query = "DELETE FROM " + Constants.SCHEMA + ".PRICES "
 				+ "WHERE Price_ID = ?";
@@ -133,13 +114,7 @@ public class PriceDAOImpl implements PriceDAO {
 	 */
 	@Override
 	public LinkedHashMap<Integer, Price> getStockPriceHistory(Stock stock) {
-		Connection conn = null;
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
+		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		LinkedHashMap<Integer, Price> priceMap = new LinkedHashMap<Integer, Price>();
 		Price p;
@@ -182,4 +157,21 @@ public class PriceDAOImpl implements PriceDAO {
 		}
 	}	
 	
+	/**
+	 * Method returns an active connection 
+	 * 
+	 * @author J Kramer
+	 * @return Connection object
+	 */
+	private Connection getConnection(){
+		Connection conn = null;
+		
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return conn;
+	}
 }

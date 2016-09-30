@@ -17,13 +17,7 @@ public class TransactionDAOImpl implements TransactionDAO {
 	 */
 	@Override
 	public void insertTransaction(Transaction t) {
-		Connection conn = null;
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
+		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		String query = "INSERT INTO " + Constants.SCHEMA + ".TRANSACTIONS (Symbol, Date, Action, Price, Net)"
 				+ "VALUES(?, ?, ?, ?, ?)";
@@ -58,13 +52,7 @@ public class TransactionDAOImpl implements TransactionDAO {
 	 */
 	@Override
 	public void updateTransaction(Transaction t) {
-		Connection conn = null;
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
+		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		String query = "UPDATE " + Constants.SCHEMA + ".TRANSACTIONS "
 				+ "SET Symbol = ?, Date = ?, Action = ?, Price = ?, Net = ?"
@@ -94,13 +82,7 @@ public class TransactionDAOImpl implements TransactionDAO {
 	 */
 	@Override
 	public void deleteTransaction(Transaction t, Stock s) {
-		Connection conn = null;
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
+		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		String query = "DELETE FROM " + Constants.SCHEMA + ".TRANSACTIONS "
 				+ "WHERE Transaction_ID = ?";
@@ -120,13 +102,7 @@ public class TransactionDAOImpl implements TransactionDAO {
 
 	@Override
 	public LinkedHashMap<Integer, Transaction> getStockTransactionHistory(Stock stock) {
-		Connection conn = null;
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
+		Connection conn = getConnection();
 		Transaction t;
 		LinkedHashMap<Integer, Transaction> transactionMap = new LinkedHashMap<Integer, Transaction>();
 		PreparedStatement pstmt = null;
@@ -170,5 +146,23 @@ public class TransactionDAOImpl implements TransactionDAO {
 		} catch (Exception ex){
 			ex.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Method returns an active connection 
+	 * 
+	 * @author J Kramer
+	 * @return Connection object
+	 */
+	private Connection getConnection(){
+		Connection conn = null;
+		
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return conn;
 	}
 }

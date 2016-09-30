@@ -17,12 +17,7 @@ public class StockDAOImpl implements StockDAO{
 	 */
 	@Override
 	public void insertStock(Stock stock) {
-		Connection conn = null;
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
+		Connection conn = getConnection();
 		String symbol = stock.getSymbol();
 		String companyName = stock.getCompanyName();
 		double annualDivRate = stock.getAnnualDivRate();
@@ -53,12 +48,7 @@ public class StockDAOImpl implements StockDAO{
 	 */
 	@Override
 	public void updateStock(Stock stock) {
-		Connection conn = null;
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
+		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		String companyName = stock.getCompanyName();
 		double annualDivRate = stock.getAnnualDivRate();
@@ -90,14 +80,7 @@ public class StockDAOImpl implements StockDAO{
 	 */
 	@Override
 	public void deactivateStock(Stock stock) {
-		Connection conn = null;
-		
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
+		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		String symbol = stock.getSymbol();
 		
@@ -125,12 +108,7 @@ public class StockDAOImpl implements StockDAO{
 	 */
 	@Override
 	public LinkedHashMap<String, Stock> getAllStocks() {
-		Connection conn = null;
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
+		Connection conn = getConnection();
 		LinkedHashMap<String, Stock> allStocks = new LinkedHashMap<String, Stock>();
 		String query = "SELECT * FROM " + Constants.SCHEMA + ".STOCK " +
 				"ORDER BY Symbol";
@@ -162,14 +140,7 @@ public class StockDAOImpl implements StockDAO{
 	}
 	
 	public void deleteStock(Stock stock){
-		Connection conn = null;
-		
-		try{
-			conn = DriverManager.getConnection(Constants.DB_URL);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		
+		Connection conn = getConnection();
 		String query = "DELETE FROM " + Constants.SCHEMA + ".STOCK "
 				+ "WHERE Symbol = ?";
 		PreparedStatement pstmt = null;
@@ -199,5 +170,23 @@ public class StockDAOImpl implements StockDAO{
 		} catch (Exception ex){
 			ex.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Method returns an active connection 
+	 * 
+	 * @author J Kramer
+	 * @return Connection object
+	 */
+	private Connection getConnection(){
+		Connection conn = null;
+		
+		try{
+			conn = DriverManager.getConnection(Constants.DB_URL);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return conn;
 	}
 }
