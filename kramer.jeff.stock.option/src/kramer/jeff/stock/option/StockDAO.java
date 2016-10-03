@@ -1,15 +1,17 @@
 package kramer.jeff.stock.option;
 
-import java.util.LinkedHashMap;
+import java.sql.ResultSet;
 
 public interface StockDAO {
-	public void insertStock(Stock stock);
+	public boolean insertStock(Stock stock);
 	
-	public void updateStock(Stock stock);
+	public boolean updateStock(Stock stock);
 	
-	public void deleteStock(Stock stock);
+	public boolean deleteStock(Stock stock);
 	
-	public LinkedHashMap<String, Stock> getAllStocks();
+	public ResultSet getAllStocks();
 	
-	public void deactivateStock(Stock stock);
+	public ResultSet getActiveStocks();
+	
+	public boolean deactivateStock(Stock stock);
 }

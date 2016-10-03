@@ -8,7 +8,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 
 /**
  * Creates the window for the user to enter new stocks
@@ -17,12 +17,12 @@ import java.util.LinkedHashMap;
  */
 public final class GUINewStockWindow {
 
-	public final static void createWindow(LinkedHashMap<String, Stock> stockMap){
+	public final static void createWindow(HashMap<String, Stock> stockMap){
 		Stage stage = new Stage();
 		stage.setTitle("Add New Stock");
 		
 		BorderPane rootNode = new BorderPane();
-		Scene scene = new Scene(rootNode, 400, 250);
+		Scene scene = new Scene(rootNode, 450, 250);
 		
 		GridPane stockGrid = new GridPane();
 		stockGrid.setHgap(10);
@@ -57,13 +57,12 @@ public final class GUINewStockWindow {
 		stockGrid.add(annualDivRateText, 1, 2);
 		
 		//Error label
-		Label errorLabel = new Label("Error");
-		errorLabel.setManaged(false);
-		errorLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-		errorLabel.setTextFill(Color.RED);
-		errorLabel.setWrapText(true);
-		errorLabel.setMaxWidth(350);
-		stockGrid.add(errorLabel, 0, 3, 2, 1);
+		Label msgLabel = new Label("Error");
+		msgLabel.setManaged(false);
+		msgLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+		msgLabel.setWrapText(true);
+		msgLabel.setMaxWidth(350);
+		stockGrid.add(msgLabel, 0, 3, 2, 1);
 										
 		//Buttons at the bottom of the pane
 		//One button is to save the new stock and the other closes the window
@@ -71,8 +70,8 @@ public final class GUINewStockWindow {
 		Button btnClose = new Button("Close");
 		
 		//Set the maximum size on the buttons
-		btnSave.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		btnClose.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		btnSave.setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
+		btnClose.setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
 		
 		//Tile pane to store the buttons
 		TilePane tileButtons = new TilePane(Orientation.HORIZONTAL);
@@ -94,10 +93,9 @@ public final class GUINewStockWindow {
 		btnSave.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent ae){
 				//Hide error label if it is showing
-				if(errorLabel.isManaged()){
-					errorLabel.setManaged(false);
-				}						
-				
+				msgLabel.setManaged(false);
+				msgLabel.setText("");
+								
 				String symbol = symbolText.getText().toUpperCase();
 				String companyName = companyNameText.getText();
 				String annualDivRateString = annualDivRateText.getText();
@@ -105,24 +103,27 @@ public final class GUINewStockWindow {
 				
 				//Validate a value was provided for the symbol field
 				if(symbol.length() == 0){
-					errorLabel.setText("Please enter a stock symbol.");
-					errorLabel.setManaged(true);
+					msgLabel.setText("Please enter a stock symbol.");
+					msgLabel.setManaged(true);
+					msgLabel.setTextFill(Color.RED);
 					symbolText.requestFocus();
 					return;
 				} 
 				
 				//Validate a value was provided for the company name field
 				if(companyName.length() == 0){
-					errorLabel.setText("Please enter a company name.");
-					errorLabel.setManaged(true);
+					msgLabel.setText("Please enter a company name.");
+					msgLabel.setManaged(true);
+					msgLabel.setTextFill(Color.RED);
 					companyNameText.requestFocus();
 					return;
 				}
 				
 				//Validate a value was provided for the annual dividend rate field
 				if(annualDivRateString.length() == 0){
-					errorLabel.setText("Please enter an annual dividend rate.");
-					errorLabel.setManaged(true);
+					msgLabel.setText("Please enter an annual dividend rate.");
+					msgLabel.setManaged(true);
+					msgLabel.setTextFill(Color.RED);
 					annualDivRateText.requestFocus();
 					return;
 				}
@@ -132,8 +133,9 @@ public final class GUINewStockWindow {
 				try{
 					annualDivRate = Double.parseDouble(annualDivRateText.getText());
 				} catch (Exception ex){
-					errorLabel.setManaged(true);
-					errorLabel.setText("Annual dividend rate must be a number.");
+					msgLabel.setManaged(true);
+					msgLabel.setText("Annual dividend rate must be a number.");
+					msgLabel.setTextFill(Color.RED);
 					annualDivRateText.setText("");
 					annualDivRateText.requestFocus();
 					return;
@@ -141,8 +143,19 @@ public final class GUINewStockWindow {
 				
 				//Create a new Stock object for the new stock and insert the new stock into the database.
 				Stock s = new Stock(symbol, companyName, annualDivRate, 1);
-				StockDAOImpl sImpl = new StockDAOImpl();
-				sImpl.insertStock(s);
+				StockService stockService = new StockService();
+				if(stockService.insertStock(s)){
+					msgLabel.setManaged(true);
+					msgLabel.setTextFill(Color.BLACK);
+					symbolText.setText("");
+					companyNameText.setText("");
+					annualDivRateText.setText("");
+					msgLabel.setText("Stock " + symbolText.getText() + " saved.");
+				} else {
+					msgLabel.setManaged(true);
+					msgLabel.setTextFill(Color.BLACK);
+					msgLabel.setText("Unable to save Stock");
+				}
 			}
 		});
 		

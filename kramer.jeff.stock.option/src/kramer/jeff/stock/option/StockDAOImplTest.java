@@ -26,7 +26,7 @@ public class StockDAOImplTest{
 		sArray[1] = new Stock("NKE", "Nike Inc", .4, 1, "");
 		
 		for(Stock s : sArray){
-			sImpl.insertStock(s);
+			assertTrue(sImpl.insertStock(s));
 		}
 		
 		query = "SELECT * FROM STOCKOPTIONS.STOCK ORDER BY Symbol";
@@ -87,7 +87,7 @@ public class StockDAOImplTest{
 		s.setCompanyName("Netflix, Incorporated");
 		s.setAnnualDivRate(.30);
 		
-		sImpl.updateStock(s);
+		assertTrue(sImpl.updateStock(s));
 		
 		query = "SELECT * FROM STOCKOPTIONS.STOCK";
 		
@@ -125,7 +125,7 @@ public class StockDAOImplTest{
 		query = "INSERT INTO STOCKOPTIONS.STOCK VALUES('APPL', 'Apple Inc.', 0.25, 1)";		
 		execute(query, conn);
 		
-		sImpl.deactivateStock(s);
+		assertTrue(sImpl.deactivateStock(s));
 		
 		query = "SELECT * FROM STOCKOPTIONS.STOCK";
 		
@@ -156,7 +156,7 @@ public class StockDAOImplTest{
 		StockDAOImpl sImpl = new StockDAOImpl();
 		Connection conn = dbi.getConnection();
 		String query;
-		LinkedHashMap<String, Stock> allStocks = new LinkedHashMap<String, Stock>();
+		ResultSet rs = null;
 		
 		Stock[] stocks = new Stock[3];
 		
@@ -169,16 +169,59 @@ public class StockDAOImplTest{
 					+ "('USD', 'Walt Disney Co.', 0.86, 1)";		
 		execute(query, conn);
 		
-		allStocks = sImpl.getAllStocks();
+		rs = sImpl.getAllStocks();
 		
 		int i = 0;
-		for(Map.Entry<String, Stock> stock : allStocks.entrySet()){
-			assertEquals(stocks[i].getSymbol(), stock.getKey());
-			assertEquals(stocks[i].getCompanyName(), stock.getValue().getCompanyName());
-			assertEquals(stocks[i].getAnnualDivRate(), stock.getValue().getAnnualDivRate(), 0);
-			i++;
+		try{
+			while(rs.next()){
+				assertEquals(stocks[i].getSymbol(), rs.getString("Symbol"));
+				assertEquals(stocks[i].getCompanyName(), rs.getString("Name"));
+				assertEquals(stocks[i].getAnnualDivRate(), rs.getDouble("Annual_Div_Rate"), 0);
+				i++;
+			}
+		} catch (Exception ex){
+			ex.printStackTrace();
 		}
+			
+		query = "DELETE FROM STOCKOPTIONS.STOCK";
 		
+		execute(query, conn);
+		
+		dbi.closeConnection();
+	}
+	
+	@Test
+	public void testGetActiveStocks() {
+		DatabaseInitializer dbi = new DatabaseInitializer();
+		dbi.startUp();
+		StockDAOImpl sImpl = new StockDAOImpl();
+		Connection conn = dbi.getConnection();
+		String query;
+		ResultSet rs = null;
+		
+		Stock[] stocks = new Stock[3];
+		
+		stocks[0] = new Stock("FB", "Facebook, Inc. Common Stock", 0.57, 0);
+		stocks[1] = new Stock("ORCL", "Oracle Corporation", 0.69, 1);
+		stocks[2] = new Stock("USD", "Walt Disney Co.", 0.86, 0);
+		
+		query = "INSERT INTO STOCKOPTIONS.STOCK VALUES('ORCL', 'Oracle Corporation', 0.69, 1),"
+					+ "('FB', 'Facebook, Inc. Common Stock', 0.57, 0),"
+					+ "('USD', 'Walt Disney Co.', 0.86, 0)";		
+		execute(query, conn);
+		
+		rs = sImpl.getActiveStocks();
+		
+		try{
+			while(rs.next()){
+				assertEquals(stocks[1].getSymbol(), rs.getString("Symbol"));
+				assertEquals(stocks[1].getCompanyName(), rs.getString("Name"));
+				assertEquals(stocks[1].getAnnualDivRate(), rs.getDouble("Annual_Div_Rate"), 0);
+			}
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+			
 		query = "DELETE FROM STOCKOPTIONS.STOCK";
 		
 		execute(query, conn);
@@ -202,7 +245,7 @@ public class StockDAOImplTest{
 		
 		execute(query, conn);
 		
-		sImpl.deleteStock(s1);
+		assertTrue(sImpl.deleteStock(s1));
 		
 		query = "SELECT * FROM STOCKOPTIONS.STOCK";
 		

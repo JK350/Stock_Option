@@ -16,11 +16,12 @@ public class StockDAOImpl implements StockDAO{
 	 * @param stock
 	 */
 	@Override
-	public void insertStock(Stock stock) {
+	public final boolean insertStock(Stock stock) {
 		Connection conn = getConnection();
 		String symbol = stock.getSymbol();
 		String companyName = stock.getCompanyName();
 		double annualDivRate = stock.getAnnualDivRate();
+		boolean success = false;
 		PreparedStatement pstmt = null;
 		
 		String query = "INSERT INTO " + Constants.SCHEMA + ".STOCK (Symbol, Name, Annual_Div_Rate, Active)" + 
@@ -33,11 +34,15 @@ public class StockDAOImpl implements StockDAO{
 			pstmt.setDouble(3, annualDivRate);
 			
 			pstmt.executeUpdate();
+			
+			success = true;
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
 			closeStatement(pstmt);
 		}
+		
+		return success;
 	}
 
 	/** 
@@ -47,9 +52,10 @@ public class StockDAOImpl implements StockDAO{
 	 * @param stock
 	 */
 	@Override
-	public void updateStock(Stock stock) {
+	public final boolean updateStock(Stock stock) {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
+		boolean success = false;
 		String companyName = stock.getCompanyName();
 		double annualDivRate = stock.getAnnualDivRate();
 		String symbol = stock.getSymbol();
@@ -64,12 +70,15 @@ public class StockDAOImpl implements StockDAO{
 			pstmt.setString(3, symbol);
 			
 			pstmt.executeUpdate();
+			
+			success = true;
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
 			closeStatement(pstmt);
 		}
 		
+		return success;
 	}
 
 	/**
@@ -79,9 +88,10 @@ public class StockDAOImpl implements StockDAO{
 	 * @param stock
 	 */
 	@Override
-	public void deactivateStock(Stock stock) {
+	public final boolean deactivateStock(Stock stock) {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
+		boolean success = false;
 		String symbol = stock.getSymbol();
 		
 		String query = "UPDATE " + Constants.SCHEMA + ".STOCK " +
@@ -92,12 +102,15 @@ public class StockDAOImpl implements StockDAO{
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, symbol);
 			pstmt.executeUpdate();
+			
+			success = true;
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
 			closeStatement(pstmt);
 		}
 		
+		return success;
 	}
 
 	/**
@@ -107,53 +120,76 @@ public class StockDAOImpl implements StockDAO{
 	 * @return HashMap<String, Stock>
 	 */
 	@Override
-	public LinkedHashMap<String, Stock> getAllStocks() {
+	public final ResultSet getAllStocks() {
 		Connection conn = getConnection();
-		LinkedHashMap<String, Stock> allStocks = new LinkedHashMap<String, Stock>();
 		String query = "SELECT * FROM " + Constants.SCHEMA + ".STOCK " +
 				"ORDER BY Symbol";
 		
 		Statement stmt = null;
+		ResultSet rs = null;
 		
 		try{
 			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
-			
-			while(rs.next()){
-				String symbol = rs.getString("SYMBOL");
-				double annDivRate = rs.getDouble("ANNUAL_DIV_RATE");
-				String compName = rs.getString("NAME");
-				int active = rs.getInt("ACTIVE");
-				
-				Stock stock = new Stock(symbol, compName, annDivRate, active);
-				
-				allStocks.put(symbol, stock);
-			}
+			rs = stmt.executeQuery(query);
 			
 		} catch (Exception ex){
 			ex.printStackTrace();
-		} finally {
-			closeStatement(stmt);
 		}
 		
-		return allStocks;
+		return rs;
 	}
 	
-	public void deleteStock(Stock stock){
+	/**
+	 * Method to return all the active stocks in the database
+	 * 
+	 * @author J Kramer
+	 */
+	public final ResultSet getActiveStocks(){
 		Connection conn = getConnection();
+		String query = "SELECT * FROM " + Constants.SCHEMA + ".STOCK "
+				+ "WHERE Active = 1 "
+				+ "ORDER BY Symbol";
+		
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try{
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return rs;
+	}
+	
+	/**
+	 * Method to delete a stock from the database permanently
+	 * 
+	 * @author J Kramer
+	 * @param stock - Stock to be deleted
+	 */
+	public final boolean deleteStock(Stock stock){
+		Connection conn = getConnection();
+		PreparedStatement pstmt = null;
+		boolean success = false;
 		String query = "DELETE FROM " + Constants.SCHEMA + ".STOCK "
 				+ "WHERE Symbol = ?";
-		PreparedStatement pstmt = null;
+		
 		
 		try{
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, stock.getSymbol());
 			pstmt.executeUpdate();
+			
+			success = true;
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {
 			closeStatement(pstmt);
 		}
+		
+		return success;
 	}
 
 	/**
