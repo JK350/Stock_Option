@@ -18,14 +18,12 @@ public class OptionProgram extends Application{
 	private HashMap<String, Stock> stockMap = new HashMap<String, Stock>();
 	
 	public static void main(String[] args) {
-		//DatabaseInitializer db = new DatabaseInitializer();
-		
 		launch(args);
-		
-		//db.closeConnection();
 	}
 	
 	public void init(){
+		DatabaseInitializer dbi = new DatabaseInitializer();
+		dbi.startUp();
 		StockService stockService = new StockService();
 		stockMap = stockService.getAllStockHashMap();
 	}
