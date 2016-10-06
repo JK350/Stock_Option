@@ -12,7 +12,7 @@ public final class Constants {
 	public static final String SCHEMA = "STOCKOPTIONS";
 	public static final String USER = "JKramer";
 	public static final String PASSWORD = "123abc456";
-	public static final String[] TABLES = {"STOCK", "PRICES", "TRANSACTIONS"};
+	public static final String[] TABLES = {"STOCK", "PRICES", "TRANSACTIONS", "ACCOUNTS"};
 	public static final HashMap<String, String> TABLE_CREATION_QUERIES = new HashMap<String, String>();
 	
 	static{
@@ -21,7 +21,9 @@ public final class Constants {
 				+ "Name VARCHAR(256) NOT NULL,"
 				+ "Annual_Div_Rate FLOAT NOT NULL,"	
 				+ "Active INTEGER NOT NULL,"
-				+ "PRIMARY KEY (Symbol))");
+				+ "Account INTEGER NOT NULL,"
+				+ "PRIMARY KEY (Symbol),"
+				+ "FOREIGN KEY (Account) REFERENCES STOCKOPTIONS.ACCOUNTS (Account_ID))");
 		TABLE_CREATION_QUERIES.put("PRICES", "CREATE TABLE " + SCHEMA + ".PRICES("
 				+ "Symbol VARCHAR(8) NOT NULL,"
 				+ "Date DATE NOT NULL,"
@@ -37,7 +39,14 @@ public final class Constants {
 				+ "Net DECIMAL(8,2),"
 				+ "Transaction_ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
 				+ "PRIMARY KEY(Symbol, Date, Action, Price),"
-				+ "FOREIGN KEY (Symbol) REFERENCES STOCKOPTIONS.STOCK (Symbol))");	
+				+ "FOREIGN KEY (Symbol) REFERENCES STOCKOPTIONS.STOCK (Symbol))");
+		TABLE_CREATION_QUERIES.put("ACCOUNTS", "CREATE TABLE STOCKOPTIONS.ACCOUNTS( "
+				+ "Account_ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
+				+ "Number VARCHAR(75) NOT NULL,"
+				+ "Active INTEGER NOT NULL,"
+				+ "Date_Opened DATE NOT NULL,"
+				+ "Nickname VARCHAR(256),"
+				+ "PRIMARY KEY(Number))");
 	}
 	
 	private Constants(){

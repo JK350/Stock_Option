@@ -14,7 +14,7 @@ import java.sql.SQLException;
  *
 */
 
-public class DatabaseInitializer {
+public final class DatabaseInitializer {
 	
 	private Connection conn = null;
 	private Statement stmt = null;

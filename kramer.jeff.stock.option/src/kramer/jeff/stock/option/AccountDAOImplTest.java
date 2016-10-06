@@ -20,6 +20,7 @@ public class AccountDAOImplTest {
 		AccountDAOImpl aImpl = new AccountDAOImpl();
 		Connection conn = dbi.getConnection();
 		Statement stmt = null;
+		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String query;
 		
@@ -28,13 +29,41 @@ public class AccountDAOImplTest {
 		cal.add(Calendar.DAY_OF_MONTH, -1);
 		Date d2 = cal.getTime();
 		
+		int[] accTypeID = new int[2];
+		String[] accType = new String[2];
+		
+		accType[0] = "IRA";
+		accType[1] = "Joint";
+		
+		
+		query = "INSERT INTO STOCKOPTIONS.ACCOUNT_TYPE (Account_Type) "
+				+ "VALUES (?)";
+		
+		int j = 0;
+		for(String type : accType){
+			try{
+				pstmt = conn.prepareStatement(query, new String[]{"ACCOUNT_TYPE_ID"});
+				pstmt.setString(1, type);
+				pstmt.executeUpdate();
+				
+				rs = pstmt.getGeneratedKeys();
+				
+				if(rs.next()){
+					accTypeID[j] = rs.getInt(1);
+				}
+			} catch (Exception ex){
+				ex.printStackTrace();
+			}
+			j++;
+		}
+		
 		Account[] aArray = new Account[2];
 		
-		aArray[0] = new Account("acc1", "Jane Doe", 1, d1);
-		aArray[1] = new Account("acc2", "John Doe", 1, d2, "Snacky-smores");
+		aArray[0] = new Account("acc1", "Jane Doe", 1, d1, "Cheesy Poofs", "IRA", accTypeID[0]);
+		aArray[1] = new Account("acc2", "John Doe", 1, d2, "Snacky-smores", "JOINT", accTypeID[1]);
 		
 		for(Account a : aArray){
-			aImpl.insertAccount(a);
+			assertTrue(aImpl.insertAccount(a));
 		}
 		
 		query = "SELECT * FROM STOCKOPTIONS.ACCOUNTS";
@@ -58,7 +87,7 @@ public class AccountDAOImplTest {
 				assertEquals(aArray[i].getNickname(), rs.getString("Nickname"));
 				assertEquals(aArray[i].getStatus(), rs.getInt("Active"));
 				assertEquals(aArray[i].getNumber(), rs.getString("Number"));
-				
+				assertEquals(aArray[i].getAccountID(), rs.getInt("Account_ID"));
 				i++;
 			}
 		} catch (Exception ex){
@@ -66,6 +95,9 @@ public class AccountDAOImplTest {
 		}
 		
 		query = "DELETE FROM STOCKOPTIONS.ACCOUNTS";
+		execute(query, conn);
+		
+		query = "DELETE FROM STOCKOPTIONS.ACCOUNT_TYPE";
 		execute(query, conn);
 	}
 
@@ -83,16 +115,37 @@ public class AccountDAOImplTest {
 		Calendar cal = Calendar.getInstance();
 		Date d1 = cal.getTime();
 		
-		Account a = new Account("acc1", "John Doe", 1, d1, "Snacky Smores");
+		int accTypeID = 0;
+		String accType = "IRA";
 		
-		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active)"
-				+ "VALUES (?, ?, ?, 1)";
+		query = "INSERT INTO STOCKOPTIONS.ACCOUNT_TYPE (Account_Type) "
+				+ "VALUES (?)";
+		
+		try{
+			pstmt = conn.prepareStatement(query, new String[]{"ACCOUNT_TYPE_ID"});
+			pstmt.setString(1, accType);
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			
+			if(rs.next()){
+				accTypeID = rs.getInt(1);
+			}
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		Account a = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", "IRA", accTypeID);
+		
+		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active, Account_Type)"
+				+ "VALUES (?, ?, ?, 1, ?)";
 		
 		try{
 			pstmt = conn.prepareStatement(query, new String[] {"ACCOUNT_ID"});
 			pstmt.setString(1, "acc1");
 			pstmt.setString(2, "Snacky Smores");
 			pstmt.setDate(3, new java.sql.Date(d1.getTime()));
+			pstmt.setInt(4, accTypeID);
 			pstmt.executeUpdate();
 			
 			rs = pstmt.getGeneratedKeys();
@@ -106,7 +159,7 @@ public class AccountDAOImplTest {
 		a.setNickname("Cheesy Poofs");
 		a.setNumber("acc2");
 		
-		aImpl.updateAccount(a);
+		assertTrue(aImpl.updateAccount(a));
 		
 		query = "SELECT * FROM STOCKOPTIONS.ACCOUNTS";
 		
@@ -117,6 +170,7 @@ public class AccountDAOImplTest {
 			while(rs.next()){
 				assertEquals(a.getNumber(), rs.getString("Number"));
 				assertEquals(a.getNickname(), rs.getString("Nickname"));
+				assertEquals(a.getAccountTypeID(), rs.getInt("Account_Type"));
 			}
 		} catch (Exception ex){
 			ex.printStackTrace();
@@ -124,10 +178,13 @@ public class AccountDAOImplTest {
 		
 		query = "DELETE FROM STOCKOPTIONS.ACCOUNTS";
 		execute(query, conn);
+		
+		query = "DELETE FROM STOCKOPTIONS.ACCOUNT_TYPE";
+		execute(query, conn);
 	}
 
 	@Test
-	public void testDeactiveAccount() {
+	public void testDeactivateAccount() {
 		DatabaseInitializer dbi = new DatabaseInitializer();
 		dbi.startUp();
 		AccountDAOImpl aImpl = new AccountDAOImpl();
@@ -140,16 +197,37 @@ public class AccountDAOImplTest {
 		Calendar cal = Calendar.getInstance();
 		Date d1 = cal.getTime();
 		
-		Account a = new Account("acc1", "John Doe", 1, d1, "Snacky Smores");
+		int accTypeID = 0;
+		String accType = "IRA";
 		
-		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active)"
-				+ "VALUES (?, ?, ?, 1)";
+		query = "INSERT INTO STOCKOPTIONS.ACCOUNT_TYPE (Account_Type) "
+				+ "VALUES (?)";
+		
+		try{
+			pstmt = conn.prepareStatement(query, new String[]{"ACCOUNT_TYPE_ID"});
+			pstmt.setString(1, accType);
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			
+			if(rs.next()){
+				accTypeID = rs.getInt(1);
+			}
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		Account a = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", "IRA", accTypeID);
+		
+		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active, Account_Type)"
+				+ "VALUES (?, ?, ?, 1, ?)";
 		
 		try{
 			pstmt = conn.prepareStatement(query, new String[] {"ACCOUNT_ID"});
 			pstmt.setString(1, "acc1");
 			pstmt.setString(2, "Snacky Smores");
 			pstmt.setDate(3, new java.sql.Date(d1.getTime()));
+			pstmt.setInt(4, accTypeID);
 			pstmt.executeUpdate();
 			
 			rs = pstmt.getGeneratedKeys();
@@ -160,7 +238,7 @@ public class AccountDAOImplTest {
 			ex.printStackTrace();
 		}
 		
-		aImpl.deactiveAccount(a);
+		assertTrue(aImpl.deactivateAccount(a));
 		
 		query = "SELECT * FROM STOCKOPTIONS.ACCOUNTS";
 		
@@ -176,6 +254,9 @@ public class AccountDAOImplTest {
 		}
 		
 		query = "DELETE FROM STOCKOPTIONS.ACCOUNTS";
+		execute(query, conn);
+		
+		query = "DELETE FROM STOCKOPTIONS.ACCOUNT_TYPE";
 		execute(query, conn);
 	}
 
@@ -193,13 +274,40 @@ public class AccountDAOImplTest {
 		Calendar cal = Calendar.getInstance();
 		Date d1 = cal.getTime();
 		
+		int[] accTypeID = new int[2];
+		String[] accType = new String[2];
+		
+		accType[0] = "IRA";
+		accType[1] = "Joint";
+		
+		query = "INSERT INTO STOCKOPTIONS.ACCOUNT_TYPE (Account_Type) "
+				+ "VALUES (?)";
+		
+		int j = 0;
+		for(String type : accType){
+			try{
+				pstmt = conn.prepareStatement(query, new String[]{"ACCOUNT_TYPE_ID"});
+				pstmt.setString(1, type);
+				pstmt.executeUpdate();
+				
+				rs = pstmt.getGeneratedKeys();
+				
+				if(rs.next()){
+					accTypeID[j] = rs.getInt(1);
+				}
+			} catch (Exception ex){
+				ex.printStackTrace();
+			}
+			j++;
+		}
+		
 		Account[] accounts = new Account[2];
 		
-		accounts[0] = new Account("acc1", "John Doe", 1, d1, "Snacky Smores");
-		accounts[1] = new Account("acc2", "John Doe", 1, d1, "Cheesy Poofs");
+		accounts[0] = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", "Joint", accTypeID[1]);
+		accounts[1] = new Account("acc2", "John Doe", 1, d1, "Cheesy Poofs", "IRA", accTypeID[0]);
 		
-		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active)"
-				+ "VALUES (?, ?, ?, 1)";
+		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active, Account_Type)"
+				+ "VALUES (?, ?, ?, 1, ?)";
 		
 		for(Account a : accounts){
 			try{
@@ -207,6 +315,7 @@ public class AccountDAOImplTest {
 				pstmt.setString(1, a.getNumber());
 				pstmt.setString(2, a.getNickname());
 				pstmt.setDate(3, new java.sql.Date(a.getDateOpened().getTime()));
+				pstmt.setInt(4, a.getAccountTypeID());
 				pstmt.executeUpdate();
 				
 				rs = pstmt.getGeneratedKeys();
@@ -218,7 +327,7 @@ public class AccountDAOImplTest {
 			}
 		}
 		
-		aImpl.deleteAccount(accounts[1]);
+		assertTrue(aImpl.deleteAccount(accounts[1]));
 		
 		query = "SELECT * FROM STOCKOPTIONS.ACCOUNTS";
 		
@@ -239,6 +348,9 @@ public class AccountDAOImplTest {
 		
 		query = "DELETE FROM STOCKOPTIONS.ACCOUNTS";
 		execute(query, conn);
+		
+		query = "DELETE FROM STOCKOPTIONS.ACCOUNT_TYPE";
+		execute(query, conn);
 	}
 
 	@Test
@@ -254,13 +366,33 @@ public class AccountDAOImplTest {
 		Calendar cal = Calendar.getInstance();
 		Date d1 = cal.getTime();
 		
+		int accTypeID = 0;
+		String accType = "IRA";
+		
+		query = "INSERT INTO STOCKOPTIONS.ACCOUNT_TYPE (Account_Type) "
+				+ "VALUES (?)";
+		
+		try{
+			pstmt = conn.prepareStatement(query, new String[]{"ACCOUNT_TYPE_ID"});
+			pstmt.setString(1, accType);
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			
+			if(rs.next()){
+				accTypeID = rs.getInt(1);
+			}
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
 		Account[] accounts = new Account[2];
 		
-		accounts[0] = new Account("acc1", "John Doe", 1, d1, "Snacky Smores");
-		accounts[1] = new Account("acc2", "John Doe", 1, d1, "Cheesy Poofs");
+		accounts[0] = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", "IRA", accTypeID);
+		accounts[1] = new Account("acc2", "John Doe", 1, d1, "Cheesy Poofs", "IRA", accTypeID);
 		
-		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active)"
-				+ "VALUES (?, ?, ?, 1)";
+		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active, Account_Type)"
+				+ "VALUES (?, ?, ?, 1, ?)";
 		
 		for(Account a : accounts){
 			try{
@@ -268,6 +400,7 @@ public class AccountDAOImplTest {
 				pstmt.setString(1, a.getNumber());
 				pstmt.setString(2, a.getNickname());
 				pstmt.setDate(3, new java.sql.Date(a.getDateOpened().getTime()));
+				pstmt.setInt(4, a.getAccountTypeID());
 				pstmt.executeUpdate();
 				
 				rs = pstmt.getGeneratedKeys();
@@ -297,6 +430,7 @@ public class AccountDAOImplTest {
 				assertEquals(accounts[i].getNickname(), rs.getString("Nickname"));
 				assertEquals(accounts[i].getStatus(), rs.getInt("Active"));
 				assertEquals(accounts[i].getNumber(), rs.getString("Number"));
+				assertEquals(accounts[i].getAccountTypeID(), rs.getInt("Account_Type"));
 				i++;
 			}
 		} catch (Exception ex){
@@ -306,6 +440,76 @@ public class AccountDAOImplTest {
 		assertEquals(2, i);
 		
 		query = "DELETE FROM STOCKOPTIONS.ACCOUNTS";
+		execute(query, conn);
+		
+		query = "DELETE FROM STOCKOPTIONS.ACCOUNT_TYPE";
+		execute(query, conn);
+	}
+	
+	@Test
+	public void testGetAccountTypes(){
+		DatabaseInitializer dbi = new DatabaseInitializer();
+		dbi.startUp();
+		AccountDAOImpl aImpl = new AccountDAOImpl();
+		Connection conn = dbi.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+		String query;
+		
+		query = "INSERT INTO STOCKOPTIONS.ACCOUNT_TYPE (Account_Type) "
+				+ "VALUES ('Joint'),"
+				+ "('Personal'),"
+				+ "('IRA')";
+		
+		execute(query, conn);
+		
+		String[] typeArray = new String[3];
+		typeArray[0] = "IRA";
+		typeArray[1] = "Joint";
+		typeArray[2] = "Personal";
+		
+		rs = aImpl.getAccountTypes();
+		
+		try{
+			int i = 0;
+			while(rs.next()){
+				assertEquals(typeArray[i], rs.getString(1));
+				i++;
+			}
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		query = "DELETE FROM STOCKOPTIONS.ACCOUNT_TYPE";
+		execute(query, conn);
+	}
+	
+	@Test
+	public void testInsertAccountType(){
+		DatabaseInitializer dbi = new DatabaseInitializer();
+		dbi.startUp();
+		AccountDAOImpl aImpl = new AccountDAOImpl();
+		Connection conn = dbi.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+		String query;
+		
+		assertTrue(aImpl.insertAccountType("IRA"));
+		
+		query = "SELECT Account_Type FROM STOCKOPTIONS.ACCOUNT_TYPE";
+		
+		try{
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			
+			while(rs.next()){
+				assertEquals("IRA", rs.getString(1));
+			}
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		query = "DELETE FROM STOCKOPTIONS.ACCOUNT_TYPE";
 		execute(query, conn);
 	}
 
