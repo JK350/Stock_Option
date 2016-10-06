@@ -12,10 +12,13 @@ import javafx.geometry.*;
 import javafx.scene.paint.*;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class OptionProgram extends Application{
 
 	private HashMap<String, Stock> stockMap = new HashMap<String, Stock>();
+	private TreeMap<String, Account> accountMap = new TreeMap<String, Account>();
+	private TreeMap<String, Integer> accountTypeMap = new TreeMap<String, Integer>();
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -26,6 +29,10 @@ public class OptionProgram extends Application{
 		dbi.startUp();
 		StockService stockService = new StockService();
 		stockMap = stockService.getAllStockHashMap();
+		
+		AccountService accountService = new AccountService();
+		accountMap = accountService.getAllAccounts();
+		accountTypeMap = accountService.getAccountTypes();
 	}
 	
 	public void start(Stage stage){
@@ -51,12 +58,13 @@ public class OptionProgram extends Application{
 		Menu newItem = new Menu("New");
 		
 		//Create sub menu items for 'New' menu
+		MenuItem newAccount = new MenuItem("Account");
 		MenuItem newStock = new MenuItem("Stock");
 		MenuItem newPrice = new MenuItem("Price");
 		MenuItem newTransaction = new MenuItem("Transaction");
 		
 		//Add sub menu items to the 'New' menu
-		newItem.getItems().addAll(newStock, newPrice, newTransaction);
+		newItem.getItems().addAll(newAccount, newStock, newPrice, newTransaction);
 		
 		//Add menu items to the main menu bar
 		file.getItems().addAll(newItem, new SeparatorMenuItem(), exit);
@@ -68,10 +76,17 @@ public class OptionProgram extends Application{
 		//Show the stage
 		stage.show();
 		
+		//On Action functionality for the 'New Account' sub menu item
+		newAccount.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent ae){
+				GUINewAccount.createWindow(accountMap, accountTypeMap);
+			}
+		});
+		
 		//On Action functionality for the 'New Stock' sub menu item
 		newStock.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent ae){
-				GUINewStockWindow.createWindow(stockMap);
+				GUINewStock.createWindow(stockMap, accountMap);
 			}
 		});
 		

@@ -9,21 +9,23 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * Creates the window for the user to enter new stocks
  * @author J Kramer
  *
  */
-public final class GUINewStockWindow {
+public final class GUINewStock {
 
-	public final static void createWindow(HashMap<String, Stock> stockMap){
+	public final static void createWindow(HashMap<String, Stock> stockMap, TreeMap<String, Account> accountMap){
 		Stage stage = new Stage();
 		stage.setTitle("Add New Stock");
 		
 		BorderPane rootNode = new BorderPane();
-		Scene scene = new Scene(rootNode, 450, 250);
+		Scene scene = new Scene(rootNode, 450, 270);
 		
+		//Grid pane for storing the text and text fields for adding a new stock.
 		GridPane stockGrid = new GridPane();
 		stockGrid.setHgap(10);
 		stockGrid.setVgap(10);
@@ -47,14 +49,28 @@ public final class GUINewStockWindow {
 		TextField companyNameText = new TextField();
 		stockGrid.add(companyNameText, 1, 1);
 		
-		//Annual Dividend Rate in column 1, row 3
+		//Account in column 1, row 3
+		Label account = new Label();
+		account.setText("Account");
+		account.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+		stockGrid.add(account, 0, 2);
+		
+		//Choice Box for Accounts in column 2, row 3
+		ComboBox<String> accountComboBox = new ComboBox<String>();
+		for(String accountNumber : accountMap.keySet()){
+			accountComboBox.getItems().add(accountNumber);
+		}
+		accountComboBox.setPromptText("Select Account");
+		stockGrid.add(accountComboBox, 1, 2);
+		
+		//Annual Dividend Rate in column 1, row 4
 		Text annualDivRate = new Text("Annual Dividend Rate");
 		annualDivRate.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-		stockGrid.add(annualDivRate, 0, 2);
+		stockGrid.add(annualDivRate, 0, 3);
 		
-		//Text field for Annual Dividend Rate in column 2, row 3
+		//Text field for Annual Dividend Rate in column 2, row 4
 		TextField annualDivRateText = new TextField();
-		stockGrid.add(annualDivRateText, 1, 2);
+		stockGrid.add(annualDivRateText, 1, 3);
 		
 		//Error label
 		Label msgLabel = new Label("Error");
@@ -108,7 +124,16 @@ public final class GUINewStockWindow {
 					msgLabel.setTextFill(Color.RED);
 					symbolText.requestFocus();
 					return;
-				} 
+				}
+				
+				//Validate the stock is not already in the system
+				if(stockMap.containsKey(symbolText.getText())){
+					msgLabel.setText("Stock already exists in the system");
+					msgLabel.setManaged(true);
+					msgLabel.setTextFill(Color.RED);
+					symbolText.requestFocus();
+					return;
+				}
 				
 				//Validate a value was provided for the company name field
 				if(companyName.length() == 0){
@@ -145,12 +170,13 @@ public final class GUINewStockWindow {
 				Stock s = new Stock(symbol, companyName, annualDivRate, 1);
 				StockService stockService = new StockService();
 				if(stockService.insertStock(s)){
+					stockMap.put(s.getSymbol(), s);
 					msgLabel.setManaged(true);
 					msgLabel.setTextFill(Color.BLACK);
+					msgLabel.setText("Stock " + symbolText.getText() + " saved.");
 					symbolText.setText("");
 					companyNameText.setText("");
 					annualDivRateText.setText("");
-					msgLabel.setText("Stock " + symbolText.getText() + " saved.");
 				} else {
 					msgLabel.setManaged(true);
 					msgLabel.setTextFill(Color.BLACK);
