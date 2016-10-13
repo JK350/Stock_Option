@@ -14,7 +14,11 @@ import java.time.LocalDate;
 
 public final class GUINewAccount {
 	
-	public final static void createWindow(TreeMap<String, Account> accountMap, TreeMap<String, Integer> accountTypeMap){
+	public final static void createWindow(TreeMap<String, Account> accountMap){
+		//Load data
+		AccountService accountService = new AccountService();
+		TreeMap<String, Integer> accountTypeMap = accountService.getAccountTypes();
+		
 		//Create stage
 		Stage stage = new Stage();
 		stage.setTitle("Create Account");
@@ -183,10 +187,15 @@ public final class GUINewAccount {
 				int typeID = accountTypeMap.get(type);
 				Account a = new Account(number, "", 1, date, name, type, typeID);
 				AccountService accountService = new AccountService();
+				
+				//Add new account to existing account map
+				accountMap.put(a.getNumber(), a);
+				
+				//Insert new account into the database and display a message on success/failure
 				if(accountService.insertAccount(a)){
 					accountMap.put(a.getNumber(), a);
 					msgLabel.setManaged(true);
-					msgLabel.setText("Account "+ numberField.getText() + " saved.");
+					msgLabel.setText("Account " + numberField.getText() + " saved.");
 					msgLabel.setTextFill(Color.BLACK);
 					nameField.setText("");
 					numberField.setText("");

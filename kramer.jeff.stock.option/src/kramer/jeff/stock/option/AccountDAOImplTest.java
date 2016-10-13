@@ -418,7 +418,7 @@ public class AccountDAOImplTest {
 		try{
 			while(rs.next()){
 				Calendar calDB = Calendar.getInstance();
-				calDB.setTime(rs.getDate("DATE_OPENED"));
+				calDB.setTime(rs.getDate("Date_Opened"));
 				
 				Calendar calAcc = Calendar.getInstance();
 				calAcc.setTime(accounts[i].getDateOpened());
@@ -430,7 +430,7 @@ public class AccountDAOImplTest {
 				assertEquals(accounts[i].getNickname(), rs.getString("Nickname"));
 				assertEquals(accounts[i].getStatus(), rs.getInt("Active"));
 				assertEquals(accounts[i].getNumber(), rs.getString("Number"));
-				assertEquals(accounts[i].getAccountTypeID(), rs.getInt("Account_Type"));
+				assertEquals(accounts[i].getAccountType(), rs.getString("Account_Type"));
 				i++;
 			}
 		} catch (Exception ex){

@@ -164,8 +164,11 @@ public class AccountDAOImpl implements AccountDAO {
 		Statement stmt = null;
 		ResultSet rs = null;
 		
-		String query = "SELECT Account_ID, Number, Nickname, Date_Opened, Active, Account_Type FROM " + Constants.SCHEMA + ".ACCOUNTS";
-		
+		String query = "SELECT Account_ID, Number, Nickname, Date_Opened, Active, " + Constants.SCHEMA + ".ACCOUNT_TYPE.Account_Type "
+				+ "FROM " + Constants.SCHEMA + ".ACCOUNTS "
+				+ "JOIN " + Constants.SCHEMA + ".ACCOUNT_TYPE "
+				+ "ON " + Constants.SCHEMA + ".ACCOUNTS.Account_Type = " + Constants.SCHEMA + ".ACCOUNT_TYPE.Account_Type_ID";
+			
 		try{
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(query);

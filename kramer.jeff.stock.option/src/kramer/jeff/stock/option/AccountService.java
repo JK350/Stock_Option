@@ -26,6 +26,11 @@ public class AccountService {
 		return accountDAOImpl.deactivateAccount(a);
 	}
 	
+	/**
+	 * Method puts all accounts into a TreeMap with the account number as a key, Account object as the value
+	 * 
+	 * @return TreeMap<String, Account> - Key is account number
+	 */
 	public TreeMap<String, Account> getAllAccounts(){
 		ResultSet rs = null;
 		TreeMap<String, Account> aMap = new TreeMap<String, Account>();
@@ -46,6 +51,12 @@ public class AccountService {
 			}
 		} catch (Exception ex){
 			ex.printStackTrace();
+		} finally {
+			try{
+				rs.close();
+			} catch (Exception ex){
+				ex.printStackTrace();
+			}
 		}
 		
 		return aMap;
@@ -62,6 +73,12 @@ public class AccountService {
 			}
 		} catch (Exception ex){
 			ex.printStackTrace();
+		} finally {
+			try{
+				rs.close();
+			} catch (Exception ex){
+				ex.printStackTrace();
+			}
 		}
 		
 		return accountTypes;

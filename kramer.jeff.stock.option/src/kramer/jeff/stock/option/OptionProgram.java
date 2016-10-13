@@ -10,7 +10,6 @@ import javafx.scene.text.*;
 import javafx.event.*;
 import javafx.geometry.*;
 import javafx.scene.paint.*;
-
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -18,7 +17,6 @@ public class OptionProgram extends Application{
 
 	private HashMap<String, Stock> stockMap = new HashMap<String, Stock>();
 	private TreeMap<String, Account> accountMap = new TreeMap<String, Account>();
-	private TreeMap<String, Integer> accountTypeMap = new TreeMap<String, Integer>();
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -32,7 +30,6 @@ public class OptionProgram extends Application{
 		
 		AccountService accountService = new AccountService();
 		accountMap = accountService.getAllAccounts();
-		accountTypeMap = accountService.getAccountTypes();
 	}
 	
 	public void start(Stage stage){
@@ -79,7 +76,7 @@ public class OptionProgram extends Application{
 		//On Action functionality for the 'New Account' sub menu item
 		newAccount.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent ae){
-				GUINewAccount.createWindow(accountMap, accountTypeMap);
+				GUINewAccount.createWindow(accountMap);
 			}
 		});
 		
