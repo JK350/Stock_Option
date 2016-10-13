@@ -4,9 +4,10 @@ import java.util.Date;
 
 public class Transaction {
 	public Date transDate;
-	public int action;
+	public String transType;
 	public double price;
 	public double net;
+	public double commission;
 	public int transactionID;
 	public String stock;
 	
@@ -16,14 +17,16 @@ public class Transaction {
 	 * @param action
 	 * @param price
 	 * @param net
+	 * @param commission
 	 */
-	public Transaction(String s, int tID, Date tDate, int action, double price, double net) {
+	public Transaction(String s, int tID, Date tDate, String tType, double price, double net, double commission) {
 		this.stock = s;
 		this.transDate = tDate;
-		this.action = action;
+		this.transType = tType;
 		this.price = price;
 		this.net = net;
 		this.transactionID = tID;
+		this.commission = commission;
 	}
 	
 	/**
@@ -32,13 +35,15 @@ public class Transaction {
 	 * @param action
 	 * @param price
 	 * @param net
+	 * @param commission
 	 */
-	public Transaction(String s, Date tDate, int action, double price, double net) {
+	public Transaction(String s, Date tDate, String tType, double price, double net, double commission) {
 		this.stock = s;
 		this.transDate = tDate;
-		this.action = action;
+		this.transType = tType;
 		this.price = price;
 		this.net = net;
+		this.commission = commission;
 	}
 
 	public String getStock(){
@@ -49,20 +54,20 @@ public class Transaction {
 		this.stock = s;
 	}
 	
-	public Date getTransDate() {
+	public Date getTransactionDate() {
 		return transDate;
 	}
 	
-	public void setTransDate(Date transDate) {
+	public void setTransactionDate(Date transDate) {
 		this.transDate = transDate;
 	}
 	
-	public int getAction() {
-		return action;
+	public String getTransactionType() {
+		return transType;
 	}
 	
-	public void setAction(int action) {
-		this.action = action;
+	public void setTransactionType(String tType) {
+		this.transType = tType;
 	}
 	
 	public double getPrice() {
@@ -87,5 +92,19 @@ public class Transaction {
 	
 	public void setTransactionID(int tID){
 		this.transactionID = tID;
+	}
+
+	/**
+	 * @return the commission
+	 */
+	public double getCommission() {
+		return commission;
+	}
+
+	/**
+	 * @param commission the commission to set
+	 */
+	public void setCommission(double commission) {
+		this.commission = commission;
 	}
 }

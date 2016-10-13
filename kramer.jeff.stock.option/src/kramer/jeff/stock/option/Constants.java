@@ -15,6 +15,15 @@ public final class Constants {
 	public static final String[] TABLES = {"STOCK", "PRICES", "TRANSACTIONS", "ACCOUNTS"};
 	public static final HashMap<String, String> TABLE_CREATION_QUERIES = new HashMap<String, String>();
 	
+	/**
+	 * Available Transaction Types
+	 */
+	public static final String STOCK_PURCHASE = "Stock Purchase";
+	public static final String STOCK_SALE = "Stock Sale";
+	public static final String OPTION_SALE_CALL = "Option Sales Call";
+	public static final String STOCK_DIVIDEND = "Stock Dividend";
+	
+	
 	static{
 		TABLE_CREATION_QUERIES.put("STOCKS", "CREATE TABLE " + SCHEMA + ".STOCK("
 				+ "Symbol VARCHAR(8) NOT NULL,"

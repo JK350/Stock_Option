@@ -19,14 +19,14 @@ public class TransactionDAOImpl implements TransactionDAO {
 	public void insertTransaction(Transaction t) {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
-		String query = "INSERT INTO " + Constants.SCHEMA + ".TRANSACTIONS (Symbol, Date, Action, Price, Net)"
-				+ "VALUES(?, ?, ?, ?, ?)";
+		String query = "INSERT INTO " + Constants.SCHEMA + ".TRANSACTIONS (Symbol, Date, Transaction_Type, Price, Net, Commission)"
+				+ "VALUES(?, ?, ?, ?, ?, ?)";
 		
 		try{
 			pstmt = conn.prepareStatement(query, new String[] {"TRANSACTION_ID"});
 			pstmt.setString(1, t.getStock());
-			pstmt.setDate(2, new java.sql.Date(t.getTransDate().getTime()));
-			pstmt.setInt(3, t.getAction());
+			pstmt.setDate(2, new java.sql.Date(t.getTransactionDate().getTime()));
+			pstmt.setString(3, t.getTransactionType());
 			pstmt.setDouble(4, t.getPrice());
 			pstmt.setDouble(5, t.getNet());
 			
@@ -55,17 +55,18 @@ public class TransactionDAOImpl implements TransactionDAO {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		String query = "UPDATE " + Constants.SCHEMA + ".TRANSACTIONS "
-				+ "SET Symbol = ?, Date = ?, Action = ?, Price = ?, Net = ?"
+				+ "SET Symbol = ?, Date = ?, Transaction_Type = ?, Price = ?, Net = ?, Commission = ?"
 				+ "WHERE Transaction_ID = ?";
 		
 		try{
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, t.getStock());
-			pstmt.setDate(2, new java.sql.Date(t.getTransDate().getTime()));
-			pstmt.setInt(3, t.getAction());
+			pstmt.setDate(2, new java.sql.Date(t.getTransactionDate().getTime()));
+			pstmt.setString(3, t.getTransactionType());
 			pstmt.setDouble(4, t.getPrice());
 			pstmt.setDouble(5, t.getNet());
-			pstmt.setInt(6, t.getTransactionID());
+			pstmt.setDouble(6, t.getCommission());
+			pstmt.setInt(7, t.getTransactionID());
 			pstmt.executeUpdate();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -107,7 +108,7 @@ public class TransactionDAOImpl implements TransactionDAO {
 		LinkedHashMap<Integer, Transaction> transactionMap = new LinkedHashMap<Integer, Transaction>();
 		PreparedStatement pstmt = null;
 		
-		String query = "SELECT * "
+		String query = "SELECT Symbol, Transaction_ID, Date, Transaction_Type, Price, Net, Commission "
 				+ "FROM " + Constants.SCHEMA +".TRANSACTIONS "
 				+ "WHERE Symbol = ? "
 				+ "ORDER BY Date DESC";
@@ -119,7 +120,7 @@ public class TransactionDAOImpl implements TransactionDAO {
 			ResultSet rs = pstmt.executeQuery();
 			
 			while(rs.next()){
-				t = new Transaction(rs.getString("Symbol"), rs.getInt("Transaction_ID"), rs.getDate("Date"), rs.getInt("Action"), rs.getDouble("Price"), rs.getDouble("Net"));
+				t = new Transaction(rs.getString(1), rs.getInt(2), rs.getDate(3), rs.getString(4), rs.getDouble(5), rs.getDouble(6), rs.getDouble(7));
 				transactionMap.put(t.getTransactionID(), t);
 			}
 			
