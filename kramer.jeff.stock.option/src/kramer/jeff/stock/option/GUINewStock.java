@@ -23,7 +23,7 @@ public final class GUINewStock {
 		stage.setTitle("Add New Stock");
 		
 		BorderPane rootNode = new BorderPane();
-		Scene scene = new Scene(rootNode, 450, 270);
+		Scene scene = new Scene(rootNode, 450, 300);
 		
 		//Grid pane for storing the text and text fields for adding a new stock.
 		GridPane stockGrid = new GridPane();
@@ -72,13 +72,13 @@ public final class GUINewStock {
 		TextField annualDivRateText = new TextField();
 		stockGrid.add(annualDivRateText, 1, 3);
 		
-		//Error label
+		//Error label in row 5
 		Label msgLabel = new Label("Error");
 		msgLabel.setManaged(false);
 		msgLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
 		msgLabel.setWrapText(true);
 		msgLabel.setMaxWidth(350);
-		stockGrid.add(msgLabel, 0, 3, 2, 1);
+		stockGrid.add(msgLabel, 0, 4, 2, 1);
 										
 		//Buttons at the bottom of the pane
 		//One button is to save the new stock and the other closes the window
@@ -111,10 +111,13 @@ public final class GUINewStock {
 				//Hide error label if it is showing
 				msgLabel.setManaged(false);
 				msgLabel.setText("");
-								
+				
+				System.out.println(accountComboBox.getValue());
+				
 				String symbol = symbolText.getText().toUpperCase();
 				String companyName = companyNameText.getText();
 				String annualDivRateString = annualDivRateText.getText();
+				String accountNumber = accountComboBox.getValue();
 				Double annualDivRate = 0.0;
 				
 				//Validate a value was provided for the symbol field
@@ -144,6 +147,15 @@ public final class GUINewStock {
 					return;
 				}
 				
+				//Validation for the 'Account' field
+				if(accountNumber == null){
+					msgLabel.setText("Please select an account");
+					msgLabel.setManaged(true);
+					msgLabel.setTextFill(Color.RED);
+					accountComboBox.requestFocus();
+					return;
+				};
+				
 				//Validate a value was provided for the annual dividend rate field
 				if(annualDivRateString.length() == 0){
 					msgLabel.setText("Please enter an annual dividend rate.");
@@ -167,9 +179,10 @@ public final class GUINewStock {
 				}
 				
 				//Create a new Stock object for the new stock and insert the new stock into the database.
-				Stock s = new Stock(symbol, companyName, annualDivRate, 1);
+				Stock s = new Stock(symbol, companyName, annualDivRate, 1, accountNumber);
+				Account account = accountMap.get(accountNumber);
 				StockService stockService = new StockService();
-				if(stockService.insertStock(s)){
+				if(stockService.insertStock(s, account)){
 					stockMap.put(s.getSymbol(), s);
 					msgLabel.setManaged(true);
 					msgLabel.setTextFill(Color.BLACK);

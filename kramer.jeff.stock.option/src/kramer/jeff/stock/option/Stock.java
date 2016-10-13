@@ -6,7 +6,7 @@ public class Stock {
 	public String symbol;
 	public String compName;
 	public double annualDivRate;
-	public String account;
+	public String accountNumber;
 	public boolean active;
 	public LinkedHashMap<Integer, Transaction> transactionHistory;
 	public LinkedHashMap<Integer, Price> priceHistory;
@@ -19,7 +19,7 @@ public class Stock {
 		this.symbol = s;
 		this.compName = cn;
 		this.annualDivRate = adr;
-		this.account = acc;
+		this.accountNumber = acc;
 		this.active = (act == 1) ? true : false;
 	}
 	
@@ -55,12 +55,12 @@ public class Stock {
 		this.active = act;
 	}
 	
-	public String getAccount(){
-		return account;
+	public String getAccountNumber(){
+		return accountNumber;
 	}
 	
-	public void setAccount(String acc){
-		this.account = acc;
+	public void setAccountNumber(String acc){
+		this.accountNumber = acc;
 	}
 	
 	public void setTransactionHistory(LinkedHashMap<Integer, Transaction> t){

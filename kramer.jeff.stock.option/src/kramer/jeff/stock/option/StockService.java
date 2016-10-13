@@ -35,9 +35,10 @@ public class StockService {
 		return success;
 	}
 	
-	public boolean insertStock(Stock s){
+	public boolean insertStock(Stock s, Account a){
 		StockDAOImpl stockDAOImpl = new StockDAOImpl();
-		boolean success = stockDAOImpl.insertStock(s);
+		int accountID = a.getAccountID();
+		boolean success = stockDAOImpl.insertStock(s, accountID);
 		
 		return success;
 	}

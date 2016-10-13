@@ -16,7 +16,7 @@ public class StockDAOImpl implements StockDAO{
 	 * @param stock
 	 */
 	@Override
-	public final boolean insertStock(Stock stock) {
+	public final boolean insertStock(Stock stock, int accountID) {
 		Connection conn = getConnection();
 		String symbol = stock.getSymbol();
 		String companyName = stock.getCompanyName();
@@ -24,14 +24,15 @@ public class StockDAOImpl implements StockDAO{
 		boolean success = false;
 		PreparedStatement pstmt = null;
 		
-		String query = "INSERT INTO " + Constants.SCHEMA + ".STOCK (Symbol, Name, Annual_Div_Rate, Active)" + 
-				" VALUES(?, ?, ?, 1)";
+		String query = "INSERT INTO " + Constants.SCHEMA + ".STOCK (Symbol, Name, Annual_Div_Rate, Active, Account)" + 
+				" VALUES(?, ?, ?, 1, ?)";
 						
 		try{
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, symbol);
 			pstmt.setString(2, companyName);
 			pstmt.setDouble(3, annualDivRate);
+			pstmt.setInt(4, accountID);
 			
 			pstmt.executeUpdate();
 			
@@ -122,9 +123,13 @@ public class StockDAOImpl implements StockDAO{
 	@Override
 	public final ResultSet getAllStocks() {
 		Connection conn = getConnection();
-		String query = "SELECT * FROM " + Constants.SCHEMA + ".STOCK " +
-				"ORDER BY Symbol";
 		
+		String query = "SELECT Symbol, Name, Annual_Div_Rate, " + Constants.SCHEMA + ".ACCOUNTS.Number, " + Constants.SCHEMA + ".STOCK.Active "
+				+ "FROM " + Constants.SCHEMA + ".STOCK "
+				+ "JOIN " + Constants.SCHEMA + ".ACCOUNTS "
+				+ "ON " + Constants.SCHEMA + ".STOCK.Account = " + Constants.SCHEMA + ".ACCOUNTS.Account_ID "
+				+ "ORDER BY Symbol";
+				
 		Statement stmt = null;
 		ResultSet rs = null;
 		
@@ -146,9 +151,12 @@ public class StockDAOImpl implements StockDAO{
 	 */
 	public final ResultSet getActiveStocks(){
 		Connection conn = getConnection();
-		String query = "SELECT * FROM " + Constants.SCHEMA + ".STOCK "
-				+ "WHERE Active = 1 "
-				+ "ORDER BY Symbol";
+		String query = "SELECT Symbol, Name, Annual_Div_Rate, " + Constants.SCHEMA + ".ACCOUNTS.Number, " + Constants.SCHEMA + ".STOCK.Active "
+				+ "FROM " + Constants.SCHEMA + ".STOCK "
+				+ "JOIN " + Constants.SCHEMA + ".ACCOUNTS "
+				+ "ON " + Constants.SCHEMA + ".STOCK.Account = " + Constants.SCHEMA + ".ACCOUNTS.Account_ID "
+				+ "WHERE " + Constants.SCHEMA + ".STOCK.Active = 1 "
+				+ "ORDER BY Symbol";;
 		
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -175,7 +183,6 @@ public class StockDAOImpl implements StockDAO{
 		boolean success = false;
 		String query = "DELETE FROM " + Constants.SCHEMA + ".STOCK "
 				+ "WHERE Symbol = ?";
-		
 		
 		try{
 			pstmt = conn.prepareStatement(query);

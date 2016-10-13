@@ -3,7 +3,7 @@ package kramer.jeff.stock.option;
 import java.sql.ResultSet;
 
 public interface StockDAO {
-	public boolean insertStock(Stock stock);
+	public boolean insertStock(Stock stock, int accountID);
 	
 	public boolean updateStock(Stock stock);
 	
