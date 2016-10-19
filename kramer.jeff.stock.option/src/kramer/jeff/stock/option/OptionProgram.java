@@ -25,11 +25,16 @@ public class OptionProgram extends Application{
 	public void init(){
 		DatabaseInitializer dbi = new DatabaseInitializer();
 		dbi.startUp();
+		
+		//Load all stocks into a HashMap for use in the program
 		StockService stockService = new StockService();
 		stockMap = stockService.getAllStockHashMap();
 		
+		//Load all accounts into a TreeMap for use in the program
 		AccountService accountService = new AccountService();
 		accountMap = accountService.getAllAccounts();
+		
+		
 	}
 	
 	public void start(Stage stage){
@@ -58,7 +63,16 @@ public class OptionProgram extends Application{
 		MenuItem newAccount = new MenuItem("Account");
 		MenuItem newStock = new MenuItem("Stock");
 		MenuItem newPrice = new MenuItem("Price");
-		MenuItem newTransaction = new MenuItem("Transaction");
+		Menu newTransaction = new Menu("Transaction");
+		
+		//Create sub menu items for 'Transaction' menu
+		MenuItem newOptionSaleCall = new MenuItem("Option Sales Call");
+		MenuItem newStockPurchase = new MenuItem("Stock Purchase");
+		MenuItem newStockSale = new MenuItem("Stock Sale");
+		MenuItem newStockDividend = new MenuItem("Stock Dividend");
+		
+		//Add sub menu items to the 'Transaction' menu
+		newTransaction.getItems().addAll(newOptionSaleCall, newStockPurchase, newStockSale, newStockDividend);
 		
 		//Add sub menu items to the 'New' menu
 		newItem.getItems().addAll(newAccount, newStock, newPrice, newTransaction);
@@ -101,11 +115,46 @@ public class OptionProgram extends Application{
 			}
 		});
 		
-		//On Action functionality for the "New Transaction" sub menu item
-		newTransaction.setOnAction(new EventHandler<ActionEvent>(){
+		//On Action functionality for the "Stock Purchase" menu item for the 'Transaction' sub menu
+		newStockPurchase.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent ae){
+				GUINewStockPurchase nss = new GUINewStockPurchase(stockMap, accountMap);
+			}
+		});
+		
+		//On Action functionality for the "Stock Sale" menu item for the 'Transaction' sub menu
+		newStockSale.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent ae){
 				Stage stage = new Stage();
-				stage.setTitle("Add New Stock Transaction");
+				stage.setTitle("New Stock Sale");
+				
+				BorderPane rootNode = new BorderPane();
+				Scene scene = new Scene(rootNode, 400, 600);
+				
+				stage.setScene(scene);
+				stage.show();
+			}
+		});
+		
+		//On Action functionality for the "Option Sale Call" menu item for the 'Transaction' sub menu
+		newOptionSaleCall.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent ae){
+				Stage stage = new Stage();
+				stage.setTitle("New Option Sale Call");
+				
+				BorderPane rootNode = new BorderPane();
+				Scene scene = new Scene(rootNode, 400, 600);
+				
+				stage.setScene(scene);
+				stage.show();
+			}
+		});
+		
+		//On Action functionality for the "Stock Dividend" menu item for the 'Transaction' sub menu
+		newStockDividend.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent ae){
+				Stage stage = new Stage();
+				stage.setTitle("New Stock Dividend");
 				
 				BorderPane rootNode = new BorderPane();
 				Scene scene = new Scene(rootNode, 400, 600);

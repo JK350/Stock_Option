@@ -1,6 +1,8 @@
 package kramer.jeff.stock.option;
 
 import java.util.HashMap;
+
+import javafx.scene.text.*;
 /**
  * Constant variables for the Stock Option Program
  * @author J Kramer
@@ -23,6 +25,7 @@ public final class Constants {
 	public static final String OPTION_SALE_CALL = "Option Sales Call";
 	public static final String STOCK_DIVIDEND = "Stock Dividend";
 	
+	public static final Font FONT_ARIAL_BOLD_16 = Font.font("Arial", FontWeight.BOLD, 16);	
 	
 	static{
 		TABLE_CREATION_QUERIES.put("STOCKS", "CREATE TABLE " + SCHEMA + ".STOCK("
