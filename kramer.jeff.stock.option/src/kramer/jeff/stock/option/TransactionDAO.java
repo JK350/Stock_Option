@@ -1,6 +1,6 @@
 package kramer.jeff.stock.option;
 
-import java.util.LinkedHashMap;
+import java.sql.ResultSet;
 
 public interface TransactionDAO {
 	public void insertTransaction(Transaction t);
@@ -9,5 +9,7 @@ public interface TransactionDAO {
 	
 	public void deleteTransaction(Transaction t, Stock s);
 	
-	public LinkedHashMap<Integer, Transaction> getStockTransactionHistory(Stock stock);
+	public ResultSet getStockTransactionHistory(Stock stock);
+	
+	public ResultSet getAccountTransactionHistory(Account account);
 }

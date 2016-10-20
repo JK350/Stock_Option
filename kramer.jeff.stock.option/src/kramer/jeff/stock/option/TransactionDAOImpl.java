@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.LinkedHashMap;
 
 public class TransactionDAOImpl implements TransactionDAO {
 	
@@ -19,16 +18,18 @@ public class TransactionDAOImpl implements TransactionDAO {
 	public void insertTransaction(Transaction t) {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
-		String query = "INSERT INTO " + Constants.SCHEMA + ".TRANSACTIONS (Symbol, Date, Transaction_Type, Price, Net, Commission)"
+		Account a = t.getAccount();
+		String query = "INSERT INTO " + Constants.SCHEMA + ".TRANSACTIONS (Symbol, Account, Date, Transaction_Type, Price, Net, Commission)"
 				+ "VALUES(?, ?, ?, ?, ?, ?)";
 		
 		try{
 			pstmt = conn.prepareStatement(query, new String[] {"TRANSACTION_ID"});
 			pstmt.setString(1, t.getStock());
-			pstmt.setDate(2, new java.sql.Date(t.getTransactionDate().getTime()));
-			pstmt.setString(3, t.getTransactionType());
-			pstmt.setDouble(4, t.getPrice());
-			pstmt.setDouble(5, t.getNet());
+			pstmt.setInt(2, a.getAccountID());
+			pstmt.setDate(3, new java.sql.Date(t.getTransactionDate().getTime()));
+			pstmt.setString(4, t.getTransactionType());
+			pstmt.setDouble(5, t.getPrice());
+			pstmt.setDouble(6, t.getNet());
 			
 			pstmt.executeUpdate();
 			
@@ -54,19 +55,21 @@ public class TransactionDAOImpl implements TransactionDAO {
 	public void updateTransaction(Transaction t) {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
+		Account a = t.getAccount();
 		String query = "UPDATE " + Constants.SCHEMA + ".TRANSACTIONS "
-				+ "SET Symbol = ?, Date = ?, Transaction_Type = ?, Price = ?, Net = ?, Commission = ?"
+				+ "SET Symbol = ?, Account = ?, Date = ?, Transaction_Type = ?, Price = ?, Net = ?, Commission = ?"
 				+ "WHERE Transaction_ID = ?";
 		
 		try{
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, t.getStock());
-			pstmt.setDate(2, new java.sql.Date(t.getTransactionDate().getTime()));
-			pstmt.setString(3, t.getTransactionType());
-			pstmt.setDouble(4, t.getPrice());
-			pstmt.setDouble(5, t.getNet());
-			pstmt.setDouble(6, t.getCommission());
-			pstmt.setInt(7, t.getTransactionID());
+			pstmt.setInt(2, a.getAccountID());
+			pstmt.setDate(3, new java.sql.Date(t.getTransactionDate().getTime()));
+			pstmt.setString(4, t.getTransactionType());
+			pstmt.setDouble(5, t.getPrice());
+			pstmt.setDouble(6, t.getNet());
+			pstmt.setDouble(7, t.getCommission());
+			pstmt.setInt(8, t.getTransactionID());
 			pstmt.executeUpdate();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -102,14 +105,15 @@ public class TransactionDAOImpl implements TransactionDAO {
 	}
 
 	@Override
-	public LinkedHashMap<Integer, Transaction> getStockTransactionHistory(Stock stock) {
+	public ResultSet getStockTransactionHistory(Stock stock) {
 		Connection conn = getConnection();
-		Transaction t;
-		LinkedHashMap<Integer, Transaction> transactionMap = new LinkedHashMap<Integer, Transaction>();
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		
-		String query = "SELECT Symbol, Transaction_ID, Date, Transaction_Type, Price, Net, Commission "
-				+ "FROM " + Constants.SCHEMA +".TRANSACTIONS "
+		String query = "SELECT Symbol, " + Constants.SCHEMA + ".ACCOUNTS.Number, Transaction_ID, Date, Transaction_Type, Price, Net, Commission "
+				+ "FROM " + Constants.SCHEMA + ".TRANSACTIONS "
+				+ "JOIN " + Constants.SCHEMA + ".ACCOUNTS "
+				+ "ON " + Constants.SCHEMA + ".TRANSACTIONS.Account = " + Constants.SCHEMA + ".ACCOUNTS.Account_ID "
 				+ "WHERE Symbol = ? "
 				+ "ORDER BY Date DESC";
 		
@@ -117,20 +121,37 @@ public class TransactionDAOImpl implements TransactionDAO {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, stock.getSymbol());
 			
-			ResultSet rs = pstmt.executeQuery();
-			
-			while(rs.next()){
-				t = new Transaction(rs.getString(1), rs.getInt(2), rs.getDate(3), rs.getString(4), rs.getDouble(5), rs.getDouble(6), rs.getDouble(7));
-				transactionMap.put(t.getTransactionID(), t);
-			}
-			
+			rs = pstmt.executeQuery();			
 		} catch (Exception ex){
 			ex.printStackTrace();
-		} finally {
-			closeStatement(pstmt);
 		}
 		
-		return transactionMap;
+		return rs;
+	}
+	
+	@Override
+	public ResultSet getAccountTransactionHistory(Account account){
+		Connection conn = getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String query = "SELECT Symbol, " + Constants.SCHEMA + ".ACCOUNTS.Number, Transaction_ID, Date, Transaction_Type, Price, Net, Commission "
+				+ "FROM " + Constants.SCHEMA + ".TRANSACTIONS "
+				+ "JOIN " + Constants.SCHEMA + ".ACCOUNTS "
+				+ "ON " + Constants.SCHEMA + ".TRANSACTIONS.Account = " + Constants.SCHEMA + ".ACCOUNTS.Account_ID "
+				+ "WHERE Account = ? "
+				+ "ORDER BY Date DESC";
+		
+		try{
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, account.getAccountID());
+			
+			rs = pstmt.executeQuery();			
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return rs;
 	}
 
 	/**
