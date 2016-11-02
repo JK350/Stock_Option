@@ -4,12 +4,17 @@ import java.util.LinkedHashMap;
 
 public class Stock {
 	public String symbol;
-	public String compName;
+	public String companyName;
 	public double annualDivRate;
 	public String accountNumber;
 	public boolean active;
 	public LinkedHashMap<Integer, Transaction> transactionHistory;
 	public LinkedHashMap<Integer, Price> priceHistory;
+	
+	//Spring Constructor
+	public Stock(){
+		
+	}
 	
 	public Stock(String s, String cn, double adr, int act){
 		this(s, cn, adr, act, "");
@@ -17,7 +22,7 @@ public class Stock {
 	
 	public Stock(String s, String cn, double adr, int act, String acc){
 		this.symbol = s;
-		this.compName = cn;
+		this.companyName = cn;
 		this.annualDivRate = adr;
 		this.accountNumber = acc;
 		this.active = (act == 1) ? true : false;
@@ -27,16 +32,16 @@ public class Stock {
 		return symbol;
 	}
 	
-	public void setSybmol(String s){
+	public void setSymbol(String s){
 		this.symbol = s;
 	}
 	
 	public String getCompanyName(){
-		return compName;
+		return companyName;
 	}
 	
 	public void setCompanyName(String cn){
-		this.compName = cn;
+		this.companyName = cn;
 	}
 	
 	public double getAnnualDivRate(){

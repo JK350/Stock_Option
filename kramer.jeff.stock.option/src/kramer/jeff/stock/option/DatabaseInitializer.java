@@ -20,6 +20,10 @@ public final class DatabaseInitializer {
 	private Statement stmt = null;
 	private ResultSet rs = null;
 	
+	public DatabaseInitializer(){
+		createConnection();
+	}
+	
 	/**
 	 * Method runs at start up to ensure all the proper tables are created.
 	 */

@@ -25,6 +25,13 @@ public final class Constants {
 	public static final String OPTION_SALE_CALL = "Option Sales Call";
 	public static final String STOCK_DIVIDEND = "Stock Dividend";
 	
+	/**
+	 * Available Account Types
+	 */
+	public static final String ACCOUNT_TYPE_IRA = "IRA";
+	public static final String ACCOUNT_TYPE_JOINT = "Joint";
+	public static final String ACCOUNT_TYPE_PERSONAL = "Personal";
+	
 	public static final Font FONT_ARIAL_BOLD_16 = Font.font("Arial", FontWeight.BOLD, 16);	
 	
 	static{
