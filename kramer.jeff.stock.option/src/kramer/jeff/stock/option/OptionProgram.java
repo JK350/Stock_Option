@@ -13,6 +13,11 @@ import javafx.scene.paint.*;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import com.jkramer.model.Account;
+import com.jkramer.model.Stock;
+import com.jkramer.service.AccountService;
+import com.jkramer.service.StockService;
+
 public class OptionProgram extends Application{
 
 	private HashMap<String, Stock> stockMap = new HashMap<String, Stock>();

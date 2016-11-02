@@ -1,6 +1,10 @@
-package kramer.jeff.stock.option;
+package com.jkramer.dao;
 
 import java.sql.ResultSet;
+
+import com.jkramer.model.Account;
+import com.jkramer.model.Stock;
+import com.jkramer.model.Transaction;
 
 public interface TransactionDAO {
 	public void insertTransaction(Transaction t);

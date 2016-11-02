@@ -1,4 +1,4 @@
-package kramer.jeff.stock.option;
+package com.jkramer.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,6 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.LinkedHashMap;
+
+import com.jkramer.model.Price;
+import com.jkramer.model.Stock;
+
+import kramer.jeff.stock.option.Constants;
 
 public class PriceDAOImpl implements PriceDAO {
 	

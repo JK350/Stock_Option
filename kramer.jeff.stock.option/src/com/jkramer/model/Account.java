@@ -1,4 +1,4 @@
-package kramer.jeff.stock.option;
+package com.jkramer.model;
 
 import java.util.Date;
 
@@ -10,17 +10,8 @@ public class Account {
 	private Date dateOpened;
 	private String nickname;
 	private String accountType;
-	private int accountTypeID;
-
-	//Constructors used when pulling account data out of the database
-	public Account(String number, String owner, int status, Date opened, String type){
-		this(-1, number, owner, status, opened, "", type);
-	}
 	
-	public Account(String number, String owner, int status, Date opened, String nickname, String type){
-		this(-1, number, owner, status, opened, nickname, type);
-	}
-
+	//Constructors used when pulling account data out of the database
 	public Account(int accountID, String number, String owner, int status, Date opened, String nickname, String type){
 		this.accountID = accountID;
 		this.number = number;
@@ -32,14 +23,13 @@ public class Account {
 	}
 	
 	//Constructor used for new accounts creating in the application
-	public Account(String number, String owner, int status, Date opened, String nickname, String type, int typeID){
+	public Account(String number, String owner, int status, Date opened, String nickname, String type){
 		this.number = number;
 		this.owner = owner;
 		this.status = status;
 		this.dateOpened = opened;
 		this.nickname = nickname;
 		this.accountType = type;
-		this.accountTypeID = typeID;
 	}
 
 	/**
@@ -138,21 +128,5 @@ public class Account {
 	 */
 	public void setAccountType(String accountType) {
 		this.accountType = accountType;
-	}
-
-	/**
-	 * @return the accountTypeID
-	 */
-	public int getAccountTypeID() {
-		return accountTypeID;
-	}
-
-	/**
-	 * @param accountTypeID the accountTypeID to set
-	 */
-	public void setAccountTypeID(int accountTypeID) {
-		this.accountTypeID = accountTypeID;
-	}
-	
-	
+	}	
 }

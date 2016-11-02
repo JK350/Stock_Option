@@ -1,8 +1,15 @@
-package kramer.jeff.stock.option;
+package com.jkramer.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+
+import com.jkramer.model.Account;
+import com.jkramer.model.Stock;
+import com.jkramer.model.Transaction;
+
+import kramer.jeff.stock.option.Constants;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 

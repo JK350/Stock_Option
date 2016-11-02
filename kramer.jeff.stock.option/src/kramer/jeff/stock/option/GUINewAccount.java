@@ -9,6 +9,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import java.util.TreeMap;
+
+import com.jkramer.model.Account;
+import com.jkramer.service.AccountService;
+
 import java.util.Date;
 import java.time.LocalDate;
 
@@ -17,7 +21,6 @@ public final class GUINewAccount {
 	public final static void createWindow(TreeMap<String, Account> accountMap){
 		//Load data
 		AccountService accountService = new AccountService();
-		TreeMap<String, Integer> accountTypeMap = accountService.getAccountTypes();
 		
 		//Create stage
 		Stage stage = new Stage();
@@ -56,9 +59,9 @@ public final class GUINewAccount {
 		
 		//Create and populate combo box field for account type
 		ComboBox<String> typeField = new ComboBox<String>();
-		for(String type : accountTypeMap.keySet()){
-			typeField.getItems().add(type);
-		}
+		typeField.getItems().add(Constants.ACCOUNT_TYPE_IRA);
+		typeField.getItems().add(Constants.ACCOUNT_TYPE_JOINT);
+		typeField.getItems().add(Constants.ACCOUNT_TYPE_PERSONAL);
 		
 		//Create date picker field
 		DatePicker dateField = new DatePicker();
@@ -184,8 +187,7 @@ public final class GUINewAccount {
 				Date date = java.sql.Date.valueOf(localDate);
 				
 				//Create a new Account object
-				int typeID = accountTypeMap.get(type);
-				Account a = new Account(number, "", 1, date, name, type, typeID);
+				Account a = new Account(number, "", 1, date, name, type);
 				AccountService accountService = new AccountService();
 				
 				//Add new account to existing account map

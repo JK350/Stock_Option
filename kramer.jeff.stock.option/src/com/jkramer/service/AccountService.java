@@ -1,6 +1,10 @@
-package kramer.jeff.stock.option;
+package com.jkramer.service;
 
 import java.util.TreeMap;
+
+import com.jkramer.dao.AccountDAOImpl;
+import com.jkramer.model.Account;
+
 import java.util.Date;
 import java.sql.ResultSet;
 
@@ -60,27 +64,5 @@ public class AccountService {
 		}
 		
 		return aMap;
-	}
-	
-	public TreeMap<String, Integer> getAccountTypes(){
-		TreeMap<String, Integer> accountTypes = new TreeMap<String, Integer>();
-		AccountDAOImpl accountDAO = new AccountDAOImpl();
-		ResultSet rs = accountDAO.getAccountTypes();
-		
-		try{
-			while(rs.next()){
-				accountTypes.put(rs.getString(1), rs.getInt(2));
-			}
-		} catch (Exception ex){
-			ex.printStackTrace();
-		} finally {
-			try{
-				rs.close();
-			} catch (Exception ex){
-				ex.printStackTrace();
-			}
-		}
-		
-		return accountTypes;
 	}
 }

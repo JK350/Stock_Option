@@ -11,6 +11,10 @@ import java.util.LinkedHashMap;
 
 import org.junit.Test;
 
+import com.jkramer.dao.PriceDAOImpl;
+import com.jkramer.model.Price;
+import com.jkramer.model.Stock;
+
 public class PriceDAOImplTest {
 
 	@Test

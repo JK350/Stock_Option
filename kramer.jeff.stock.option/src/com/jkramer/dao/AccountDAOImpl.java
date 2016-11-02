@@ -1,4 +1,4 @@
-package kramer.jeff.stock.option;
+package com.jkramer.dao;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -6,6 +6,10 @@ import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Date;
+
+import com.jkramer.model.Account;
+
+import kramer.jeff.stock.option.Constants;
 
 public class AccountDAOImpl implements AccountDAO {
 
@@ -22,7 +26,7 @@ public class AccountDAOImpl implements AccountDAO {
 		boolean success = false;
 		Date date = a.getDateOpened();
 		String number = a.getNumber();
-		int accountTypeID = a.getAccountTypeID();
+		String accountType = a.getAccountType();
 		//String owner = a.getOwner();  Not used at this time.
 		String nickname = a.getNickname();
 		ResultSet rs = null;
@@ -35,7 +39,7 @@ public class AccountDAOImpl implements AccountDAO {
 			pstmt.setString(1, number);
 			pstmt.setString(2, nickname);
 			pstmt.setDate(3, new java.sql.Date(date.getTime()));
-			pstmt.setInt(4, accountTypeID);
+			pstmt.setString(4, accountType);
 			pstmt.executeUpdate();
 			
 			rs = pstmt.getGeneratedKeys();
@@ -66,7 +70,7 @@ public class AccountDAOImpl implements AccountDAO {
 		Date date = a.getDateOpened();
 		String number = a.getNumber();
 		String nickname = a.getNickname();
-		int accTypeID = a.getAccountTypeID();
+		String accType = a.getAccountType();
 		int id = a.getAccountID();
 		
 		String query = "UPDATE " + Constants.SCHEMA + ".ACCOUNTS "
@@ -78,7 +82,7 @@ public class AccountDAOImpl implements AccountDAO {
 			pstmt.setString(1, number);
 			pstmt.setString(2, nickname);
 			pstmt.setDate(3, new java.sql.Date(date.getTime()));
-			pstmt.setInt(4, accTypeID);
+			pstmt.setString(4, accType);
 			pstmt.setInt(5, id);
 			pstmt.executeUpdate();
 			success = true;
@@ -164,10 +168,8 @@ public class AccountDAOImpl implements AccountDAO {
 		Statement stmt = null;
 		ResultSet rs = null;
 		
-		String query = "SELECT Account_ID, Number, Nickname, Date_Opened, Active, " + Constants.SCHEMA + ".ACCOUNT_TYPE.Account_Type "
-				+ "FROM " + Constants.SCHEMA + ".ACCOUNTS "
-				+ "JOIN " + Constants.SCHEMA + ".ACCOUNT_TYPE "
-				+ "ON " + Constants.SCHEMA + ".ACCOUNTS.Account_Type = " + Constants.SCHEMA + ".ACCOUNT_TYPE.Account_Type_ID";
+		String query = "SELECT Account_ID, Number, Nickname, Date_Opened, Active, Account_Type "
+				+ "FROM " + Constants.SCHEMA + ".ACCOUNTS ";
 			
 		try{
 			stmt = conn.createStatement();
@@ -178,59 +180,7 @@ public class AccountDAOImpl implements AccountDAO {
 		
 		return rs;
 	}
-	
-	/**
-	 * Method returns a result set containing all the available account types
-	 * 
-	 * @author J Kramer
-	 * @return rs - ResultSet containing active account types
-	 */
-	@Override
-	public final ResultSet getAccountTypes(){
-		Connection conn = getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
-		
-		String query = "SELECT Account_Type, Account_Type_ID FROM " + Constants.SCHEMA + ".ACCOUNT_TYPE ORDER BY Account_Type";
-		
-		try{
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(query);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
-		return rs;
-	}
 
-	/**
-	 * Method inserts new account types
-	 * 
-	 * @author J Kramer
-	 * @param s - account type to add
-	 * @return boolean determining if insertion was successfully
-	 */
-	@Override
-	public final boolean insertAccountType(String s){
-		Connection conn = getConnection();
-		PreparedStatement pstmt = null;
-		boolean success = false;
-		
-		String query = "INSERT INTO " + Constants.SCHEMA + ".ACCOUNT_TYPE (Account_Type) "
-				+ "VALUES (?)";
-		
-		try{
-			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, s);
-			pstmt.executeUpdate();
-			success = true;
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
-		return success;
-	}
-	
 	/**
 	 * Method used to close a statement.
 	 * 
