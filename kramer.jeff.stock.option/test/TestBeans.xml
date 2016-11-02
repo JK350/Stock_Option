@@ -36,4 +36,14 @@
     	<property name="annualDivRate" value="0.4" />
     	<property name="active" value="1" />
     </bean>
+    
+    <bean id="transactionOne" class="com.jkramer.model.Transaction">
+    	<constructor-arg index="0" ref="stockOne" />
+    	<constructor-arg index="1" ref="accountOne" />
+    	<constructor-arg index="2" value="Wed Nov 09 11:18:09 PDT 2016" />
+    	<constructor-arg index="3" value="Stock Purchase" />
+    	<constructor-arg index="4" value="" />
+    	<constructor-arg index="5" value="" />
+    	<constructor-arg index="6" value="" />  	
+    </bean>
 </beans>

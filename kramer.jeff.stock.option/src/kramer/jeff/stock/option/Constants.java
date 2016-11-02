@@ -20,10 +20,10 @@ public final class Constants {
 	/**
 	 * Available Transaction Types
 	 */
-	public static final String STOCK_PURCHASE = "Stock Purchase";
-	public static final String STOCK_SALE = "Stock Sale";
-	public static final String OPTION_SALE_CALL = "Option Sales Call";
-	public static final String STOCK_DIVIDEND = "Stock Dividend";
+	public static final String TRANSACTION_TYPE_STOCK_PURCHASE = "Stock Purchase";
+	public static final String TRANSACTION_TYPE_STOCK_SALE = "Stock Sale";
+	public static final String TRANSACTION_TYPE_OPTION_SALE_CALL = "Option Sales Call";
+	public static final String TRANSACTION_TYPE_STOCK_DIVIDEND = "Stock Dividend";
 	
 	/**
 	 * Available Account Types

@@ -3,8 +3,8 @@ package com.jkramer.model;
 import java.util.Date;
 
 public class Transaction {
-	private Date transDate;
-	private String transType;
+	private Date transactionDate;
+	private String transactionType;
 	private double price;
 	private double net;
 	private double commission;
@@ -14,6 +14,7 @@ public class Transaction {
 	
 	/**
 	 * Constructor for Transaction information coming out of the database
+	 * Transaction ID IS present in the constructor
 	 * 
 	 * @param tID
 	 * @param tDate
@@ -25,8 +26,8 @@ public class Transaction {
 	public Transaction(String s, Account a, int tID, Date tDate, String tType, double price, double net, double commission) {
 		this.stock = s;
 		this.account = a;
-		this.transDate = tDate;
-		this.transType = tType;
+		this.transactionDate = tDate;
+		this.transactionType = tType;
 		this.price = price;
 		this.net = net;
 		this.transactionID = tID;
@@ -35,10 +36,12 @@ public class Transaction {
 	
 	/**
 	 * Constructor for Transaction information going into the database
+	 * Transaction ID IS NOT present in the constructor
 	 * 
-	 * @param tID
+	 * @param s
+	 * @param a
 	 * @param tDate
-	 * @param action
+	 * @param tType
 	 * @param price
 	 * @param net
 	 * @param commission
@@ -46,8 +49,8 @@ public class Transaction {
 	public Transaction(String s, Account a, Date tDate, String tType, double price, double net, double commission) {
 		this.stock = s;
 		this.account = a;
-		this.transDate = tDate;
-		this.transType = tType;
+		this.transactionDate = tDate;
+		this.transactionType = tType;
 		this.price = price;
 		this.net = net;
 		this.commission = commission;
@@ -62,19 +65,19 @@ public class Transaction {
 	}
 	
 	public Date getTransactionDate() {
-		return transDate;
+		return transactionDate;
 	}
 	
 	public void setTransactionDate(Date transDate) {
-		this.transDate = transDate;
+		this.transactionDate = transDate;
 	}
 	
 	public String getTransactionType() {
-		return transType;
+		return transactionType;
 	}
 	
 	public void setTransactionType(String tType) {
-		this.transType = tType;
+		this.transactionType = tType;
 	}
 	
 	public double getPrice() {
@@ -113,34 +116,6 @@ public class Transaction {
 	 */
 	public void setCommission(double commission) {
 		this.commission = commission;
-	}
-
-	/**
-	 * @return the transDate
-	 */
-	public Date getTransDate() {
-		return transDate;
-	}
-
-	/**
-	 * @param transDate the transDate to set
-	 */
-	public void setTransDate(Date transDate) {
-		this.transDate = transDate;
-	}
-
-	/**
-	 * @return the transType
-	 */
-	public String getTransType() {
-		return transType;
-	}
-
-	/**
-	 * @param transType the transType to set
-	 */
-	public void setTransType(String transType) {
-		this.transType = transType;
 	}
 
 	/**

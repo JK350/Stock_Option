@@ -39,7 +39,7 @@ public class StockDAOImplTest{
 		context = new ClassPathXmlApplicationContext("TestBeans.xml");
 		
 		a = (Account) context.getBean("accountOne");
-		setUpAccount(a, conn);
+		insertAccount(a, conn);
 		
 		stockArray[0] = (Stock) context.getBean("stockOne");
 		stockArray[1] = (Stock) context.getBean("stockTwo");
@@ -226,7 +226,7 @@ public class StockDAOImplTest{
 		}
 	}
 	
-	private void setUpAccount(Account a, Connection conn){
+	private void insertAccount(Account a, Connection conn){
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active, Account_Type)"
