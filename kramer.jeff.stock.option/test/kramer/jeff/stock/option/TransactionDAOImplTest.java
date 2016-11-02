@@ -332,8 +332,8 @@ public class TransactionDAOImplTest {
 		
 		int accTypeID = setUpAccountType(conn);	
 		Account[] accountArray = new Account[2];
-		accountArray[0] = new Account("acc1", "John Doe", 1, d3, "Snacky Smores", "IRA", accTypeID);
-		accountArray[1] = new Account("acc2", "Jane Doe", 1, d3, "Cheesy Poofs", "IRA", accTypeID);
+		accountArray[0] = new Account("acc1", "John Doe", 1, d3, "Snacky Smores", Constants.ACCOUNT_TYPE_IRA);
+		accountArray[1] = new Account("acc2", "Jane Doe", 1, d3, "Cheesy Poofs", Constants.ACCOUNT_TYPE_IRA);
 		
 		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active, Account_Type)"
 				+ "VALUES (?, ?, ?, 1, ?)";
@@ -344,7 +344,7 @@ public class TransactionDAOImplTest {
 				pstmt.setString(1, a.getNumber());
 				pstmt.setString(2, a.getNickname());
 				pstmt.setDate(3, new java.sql.Date(a.getDateOpened().getTime()));
-				pstmt.setInt(4, a.getAccountTypeID());
+				pstmt.setString(4, a.getAccountType());
 				pstmt.executeUpdate();
 				
 				rs = pstmt.getGeneratedKeys();
@@ -415,7 +415,7 @@ public class TransactionDAOImplTest {
 		Calendar cal = Calendar.getInstance();
 		Date d1 = cal.getTime();
 		
-		Account a = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", "IRA", accTypeID);
+		Account a = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", Constants.ACCOUNT_TYPE_IRA);
 		String query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active, Account_Type)"
 				+ "VALUES (?, ?, ?, 1, ?)";
 		
@@ -424,7 +424,7 @@ public class TransactionDAOImplTest {
 			pstmt.setString(1, a.getNumber());
 			pstmt.setString(2, a.getNickname());
 			pstmt.setDate(3, new java.sql.Date(a.getDateOpened().getTime()));
-			pstmt.setInt(4, a.getAccountTypeID());
+			pstmt.setString(4, a.getAccountType());
 			pstmt.executeUpdate();
 			
 			rs = pstmt.getGeneratedKeys();

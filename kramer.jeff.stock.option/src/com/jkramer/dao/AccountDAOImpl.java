@@ -26,7 +26,7 @@ public class AccountDAOImpl implements AccountDAO {
 		boolean success = false;
 		Date date = a.getDateOpened();
 		String number = a.getNumber();
-		int accountTypeID = a.getAccountTypeID();
+		String accountType = a.getAccountType();
 		//String owner = a.getOwner();  Not used at this time.
 		String nickname = a.getNickname();
 		ResultSet rs = null;
@@ -39,7 +39,7 @@ public class AccountDAOImpl implements AccountDAO {
 			pstmt.setString(1, number);
 			pstmt.setString(2, nickname);
 			pstmt.setDate(3, new java.sql.Date(date.getTime()));
-			pstmt.setInt(4, accountTypeID);
+			pstmt.setString(4, accountType);
 			pstmt.executeUpdate();
 			
 			rs = pstmt.getGeneratedKeys();
@@ -70,7 +70,7 @@ public class AccountDAOImpl implements AccountDAO {
 		Date date = a.getDateOpened();
 		String number = a.getNumber();
 		String nickname = a.getNickname();
-		int accTypeID = a.getAccountTypeID();
+		String accType = a.getAccountType();
 		int id = a.getAccountID();
 		
 		String query = "UPDATE " + Constants.SCHEMA + ".ACCOUNTS "
@@ -82,7 +82,7 @@ public class AccountDAOImpl implements AccountDAO {
 			pstmt.setString(1, number);
 			pstmt.setString(2, nickname);
 			pstmt.setDate(3, new java.sql.Date(date.getTime()));
-			pstmt.setInt(4, accTypeID);
+			pstmt.setString(4, accType);
 			pstmt.setInt(5, id);
 			pstmt.executeUpdate();
 			success = true;

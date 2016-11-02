@@ -188,8 +188,7 @@ public final class GUINewAccount {
 				Date date = java.sql.Date.valueOf(localDate);
 				
 				//Create a new Account object
-				int typeID = accountTypeMap.get(type);
-				Account a = new Account(number, "", 1, date, name, type, typeID);
+				Account a = new Account(number, "", 1, date, name, type);
 				AccountService accountService = new AccountService();
 				
 				//Add new account to existing account map

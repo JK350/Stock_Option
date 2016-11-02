@@ -62,8 +62,8 @@ public class AccountDAOImplTest {
 		
 		Account[] aArray = new Account[2];
 		
-		aArray[0] = new Account("acc1", "Jane Doe", 1, d1, "Cheesy Poofs", "IRA", accTypeID[0]);
-		aArray[1] = new Account("acc2", "John Doe", 1, d2, "Snacky-smores", "JOINT", accTypeID[1]);
+		aArray[0] = new Account("acc1", "Jane Doe", 1, d1, "Cheesy Poofs", Constants.ACCOUNT_TYPE_IRA);
+		aArray[1] = new Account("acc2", "John Doe", 1, d2, "Snacky-smores", Constants.ACCOUNT_TYPE_JOINT);
 		
 		for(Account a : aArray){
 			assertTrue(aImpl.insertAccount(a));
@@ -138,7 +138,7 @@ public class AccountDAOImplTest {
 			ex.printStackTrace();
 		}
 		
-		Account a = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", "IRA", accTypeID);
+		Account a = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", Constants.ACCOUNT_TYPE_IRA);
 		
 		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active, Account_Type)"
 				+ "VALUES (?, ?, ?, 1, ?)";
@@ -173,7 +173,7 @@ public class AccountDAOImplTest {
 			while(rs.next()){
 				assertEquals(a.getNumber(), rs.getString("Number"));
 				assertEquals(a.getNickname(), rs.getString("Nickname"));
-				assertEquals(a.getAccountTypeID(), rs.getInt("Account_Type"));
+				assertEquals(a.getAccountType(), rs.getString("Account_Type"));
 			}
 		} catch (Exception ex){
 			ex.printStackTrace();
@@ -220,7 +220,7 @@ public class AccountDAOImplTest {
 			ex.printStackTrace();
 		}
 		
-		Account a = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", "IRA", accTypeID);
+		Account a = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", Constants.ACCOUNT_TYPE_IRA);
 		
 		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active, Account_Type)"
 				+ "VALUES (?, ?, ?, 1, ?)";
@@ -306,8 +306,8 @@ public class AccountDAOImplTest {
 		
 		Account[] accounts = new Account[2];
 		
-		accounts[0] = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", "Joint", accTypeID[1]);
-		accounts[1] = new Account("acc2", "John Doe", 1, d1, "Cheesy Poofs", "IRA", accTypeID[0]);
+		accounts[0] = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", Constants.ACCOUNT_TYPE_JOINT);
+		accounts[1] = new Account("acc2", "John Doe", 1, d1, "Cheesy Poofs", Constants.ACCOUNT_TYPE_IRA);
 		
 		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active, Account_Type)"
 				+ "VALUES (?, ?, ?, 1, ?)";
@@ -318,7 +318,7 @@ public class AccountDAOImplTest {
 				pstmt.setString(1, a.getNumber());
 				pstmt.setString(2, a.getNickname());
 				pstmt.setDate(3, new java.sql.Date(a.getDateOpened().getTime()));
-				pstmt.setInt(4, a.getAccountTypeID());
+				pstmt.setString(4, a.getAccountType());
 				pstmt.executeUpdate();
 				
 				rs = pstmt.getGeneratedKeys();
@@ -391,8 +391,8 @@ public class AccountDAOImplTest {
 		
 		Account[] accounts = new Account[2];
 		
-		accounts[0] = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", "IRA", accTypeID);
-		accounts[1] = new Account("acc2", "John Doe", 1, d1, "Cheesy Poofs", "IRA", accTypeID);
+		accounts[0] = new Account("acc1", "John Doe", 1, d1, "Snacky Smores", Constants.ACCOUNT_TYPE_IRA);
+		accounts[1] = new Account("acc2", "John Doe", 1, d1, "Cheesy Poofs", Constants.ACCOUNT_TYPE_IRA);
 		
 		query = "INSERT INTO STOCKOPTIONS.ACCOUNTS (Number, Nickname, Date_Opened, Active, Account_Type)"
 				+ "VALUES (?, ?, ?, 1, ?)";
@@ -403,7 +403,7 @@ public class AccountDAOImplTest {
 				pstmt.setString(1, a.getNumber());
 				pstmt.setString(2, a.getNickname());
 				pstmt.setDate(3, new java.sql.Date(a.getDateOpened().getTime()));
-				pstmt.setInt(4, a.getAccountTypeID());
+				pstmt.setString(4, a.getAccountType());
 				pstmt.executeUpdate();
 				
 				rs = pstmt.getGeneratedKeys();
