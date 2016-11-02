@@ -21,7 +21,6 @@ public final class GUINewAccount {
 	public final static void createWindow(TreeMap<String, Account> accountMap){
 		//Load data
 		AccountService accountService = new AccountService();
-		TreeMap<String, Integer> accountTypeMap = accountService.getAccountTypes();
 		
 		//Create stage
 		Stage stage = new Stage();
@@ -60,9 +59,9 @@ public final class GUINewAccount {
 		
 		//Create and populate combo box field for account type
 		ComboBox<String> typeField = new ComboBox<String>();
-		for(String type : accountTypeMap.keySet()){
-			typeField.getItems().add(type);
-		}
+		typeField.getItems().add(Constants.ACCOUNT_TYPE_IRA);
+		typeField.getItems().add(Constants.ACCOUNT_TYPE_JOINT);
+		typeField.getItems().add(Constants.ACCOUNT_TYPE_PERSONAL);
 		
 		//Create date picker field
 		DatePicker dateField = new DatePicker();

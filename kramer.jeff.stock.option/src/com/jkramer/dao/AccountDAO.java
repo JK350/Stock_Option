@@ -14,8 +14,4 @@ public interface AccountDAO {
 	public boolean deleteAccount(Account a);
 	
 	public ResultSet getAllAccounts();
-	
-	public ResultSet getAccountTypes();
-	
-	public boolean insertAccountType(String s);
 }

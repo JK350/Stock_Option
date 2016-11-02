@@ -168,10 +168,8 @@ public class AccountDAOImpl implements AccountDAO {
 		Statement stmt = null;
 		ResultSet rs = null;
 		
-		String query = "SELECT Account_ID, Number, Nickname, Date_Opened, Active, " + Constants.SCHEMA + ".ACCOUNT_TYPE.Account_Type "
-				+ "FROM " + Constants.SCHEMA + ".ACCOUNTS "
-				+ "JOIN " + Constants.SCHEMA + ".ACCOUNT_TYPE "
-				+ "ON " + Constants.SCHEMA + ".ACCOUNTS.Account_Type = " + Constants.SCHEMA + ".ACCOUNT_TYPE.Account_Type_ID";
+		String query = "SELECT Account_ID, Number, Nickname, Date_Opened, Active, Account_Type "
+				+ "FROM " + Constants.SCHEMA + ".ACCOUNTS ";
 			
 		try{
 			stmt = conn.createStatement();
@@ -182,59 +180,7 @@ public class AccountDAOImpl implements AccountDAO {
 		
 		return rs;
 	}
-	
-	/**
-	 * Method returns a result set containing all the available account types
-	 * 
-	 * @author J Kramer
-	 * @return rs - ResultSet containing active account types
-	 */
-	@Override
-	public final ResultSet getAccountTypes(){
-		Connection conn = getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
-		
-		String query = "SELECT Account_Type, Account_Type_ID FROM " + Constants.SCHEMA + ".ACCOUNT_TYPE ORDER BY Account_Type";
-		
-		try{
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(query);
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
-		return rs;
-	}
 
-	/**
-	 * Method inserts new account types
-	 * 
-	 * @author J Kramer
-	 * @param s - account type to add
-	 * @return boolean determining if insertion was successfully
-	 */
-	@Override
-	public final boolean insertAccountType(String s){
-		Connection conn = getConnection();
-		PreparedStatement pstmt = null;
-		boolean success = false;
-		
-		String query = "INSERT INTO " + Constants.SCHEMA + ".ACCOUNT_TYPE (Account_Type) "
-				+ "VALUES (?)";
-		
-		try{
-			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, s);
-			pstmt.executeUpdate();
-			success = true;
-		} catch (Exception ex){
-			ex.printStackTrace();
-		}
-		
-		return success;
-	}
-	
 	/**
 	 * Method used to close a statement.
 	 * 
