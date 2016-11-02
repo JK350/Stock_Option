@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import com.jkramer.model.Account;
+import com.jkramer.model.Stock;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.*;

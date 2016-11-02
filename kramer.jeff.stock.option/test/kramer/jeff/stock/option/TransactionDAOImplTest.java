@@ -12,6 +12,11 @@ import java.util.LinkedHashMap;
 
 import org.junit.Test;
 
+import com.jkramer.dao.TransactionDAOImpl;
+import com.jkramer.model.Account;
+import com.jkramer.model.Stock;
+import com.jkramer.model.Transaction;
+
 public class TransactionDAOImplTest {
 
 	@Test

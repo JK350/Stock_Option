@@ -1,6 +1,8 @@
-package kramer.jeff.stock.option;
+package com.jkramer.dao;
 
 import java.sql.ResultSet;
+
+import com.jkramer.model.Account;
 
 public interface AccountDAO {
 	public boolean insertAccount(Account a);

@@ -1,4 +1,4 @@
-package kramer.jeff.stock.option;
+package com.jkramer.dao;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -6,6 +6,10 @@ import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Date;
+
+import com.jkramer.model.Account;
+
+import kramer.jeff.stock.option.Constants;
 
 public class AccountDAOImpl implements AccountDAO {
 

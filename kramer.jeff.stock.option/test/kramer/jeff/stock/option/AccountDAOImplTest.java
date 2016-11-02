@@ -11,6 +11,9 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.jkramer.dao.AccountDAOImpl;
+import com.jkramer.model.Account;
+
 public class AccountDAOImplTest {
 
 	@Test

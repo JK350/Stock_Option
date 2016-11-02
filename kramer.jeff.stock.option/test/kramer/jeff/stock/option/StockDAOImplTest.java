@@ -3,6 +3,10 @@ package kramer.jeff.stock.option;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import com.jkramer.dao.StockDAOImpl;
+import com.jkramer.model.Account;
+import com.jkramer.model.Stock;
+
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
