@@ -20,25 +20,35 @@ public class StockDAOImpl implements StockDAO{
 	 * @param stock
 	 */
 	@Override
-	public final boolean insertStock(Stock stock, int accountID) {
+	public final boolean insertStock(Stock stock) {
 		Connection conn = getConnection();
 		String symbol = stock.getSymbol();
 		String companyName = stock.getCompanyName();
 		double annualDivRate = stock.getAnnualDivRate();
+		int accountID = stock.getAccount().getAccountID();
+		boolean active = stock.isActive();
 		boolean success = false;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		
 		String query = "INSERT INTO " + Constants.SCHEMA + ".STOCK (Symbol, Name, Annual_Div_Rate, Active, Account)" + 
-				" VALUES(?, ?, ?, 1, ?)";
+				" VALUES(?, ?, ?, ?, ?)";
 						
 		try{
-			pstmt = conn.prepareStatement(query);
+			pstmt = conn.prepareStatement(query, new String[] {"STOCK_ID"});
 			pstmt.setString(1, symbol);
 			pstmt.setString(2, companyName);
 			pstmt.setDouble(3, annualDivRate);
-			pstmt.setInt(4, accountID);
+			pstmt.setBoolean(4, active);
+			pstmt.setInt(5, accountID);
 			
 			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			
+			if(rs.next()){
+				stock.setStockID(rs.getInt(1));
+			}
 			
 			success = true;
 		} catch (Exception ex){
@@ -64,15 +74,19 @@ public class StockDAOImpl implements StockDAO{
 		String companyName = stock.getCompanyName();
 		double annualDivRate = stock.getAnnualDivRate();
 		String symbol = stock.getSymbol();
+		int stockID = stock.getStockID();
+		int accountID = stock.getAccount().getAccountID();
 		
 		String query = "UPDATE " + Constants.SCHEMA + ".STOCK "
-				+ "SET Name = ?, Annual_Div_Rate = ?"
-				+ "WHERE Symbol = ?";
+				+ "SET Symbol = ?, Account = ?, Name = ?, Annual_Div_Rate = ?"
+				+ "WHERE Stock_ID = ?";
 		try{
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, companyName);
-			pstmt.setDouble(2, annualDivRate);
-			pstmt.setString(3, symbol);
+			pstmt.setString(1, symbol);
+			pstmt.setInt(2, accountID);
+			pstmt.setString(3, companyName);
+			pstmt.setDouble(4, annualDivRate);
+			pstmt.setInt(5, stockID);
 			
 			pstmt.executeUpdate();
 			
@@ -97,15 +111,15 @@ public class StockDAOImpl implements StockDAO{
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
 		boolean success = false;
-		String symbol = stock.getSymbol();
+		int stockID = stock.getStockID();
 		
 		String query = "UPDATE " + Constants.SCHEMA + ".STOCK " +
-				"SET Active = 0 " +
-				"WHERE Symbol = ?";
+				"SET Active = false " +
+				"WHERE Stock_ID = ?";
 		
 		try{
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, symbol);
+			pstmt.setInt(1, stockID);
 			pstmt.executeUpdate();
 			
 			success = true;
@@ -128,7 +142,7 @@ public class StockDAOImpl implements StockDAO{
 	public final ResultSet getAllStocks() {
 		Connection conn = getConnection();
 		
-		String query = "SELECT Symbol, Name, Annual_Div_Rate, " + Constants.SCHEMA + ".ACCOUNTS.Number, " + Constants.SCHEMA + ".STOCK.Active "
+		String query = "SELECT Stock_ID, Symbol, Name, Annual_Div_Rate, " + Constants.SCHEMA + ".ACCOUNTS.Number, " + Constants.SCHEMA + ".STOCK.Active "
 				+ "FROM " + Constants.SCHEMA + ".STOCK "
 				+ "JOIN " + Constants.SCHEMA + ".ACCOUNTS "
 				+ "ON " + Constants.SCHEMA + ".STOCK.Account = " + Constants.SCHEMA + ".ACCOUNTS.Account_ID "
@@ -159,7 +173,7 @@ public class StockDAOImpl implements StockDAO{
 				+ "FROM " + Constants.SCHEMA + ".STOCK "
 				+ "JOIN " + Constants.SCHEMA + ".ACCOUNTS "
 				+ "ON " + Constants.SCHEMA + ".STOCK.Account = " + Constants.SCHEMA + ".ACCOUNTS.Account_ID "
-				+ "WHERE " + Constants.SCHEMA + ".STOCK.Active = 1 "
+				+ "WHERE " + Constants.SCHEMA + ".STOCK.Active = true "
 				+ "ORDER BY Symbol";;
 		
 		Statement stmt = null;

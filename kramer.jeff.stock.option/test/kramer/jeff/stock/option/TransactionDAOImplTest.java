@@ -31,6 +31,7 @@ public class TransactionDAOImplTest {
 	private String query = "";
 	private TransactionDAOImpl tdi = new TransactionDAOImpl();
 	private Account a = null;
+	private Stock stock = null;
 	
 	@Before
 	public void initialize(){
@@ -41,6 +42,9 @@ public class TransactionDAOImplTest {
 		
 		a = (Account) context.getBean("accountOne");
 		insertAccount(a, conn);
+		
+		stock = (Stock) context.getBean("stockOne");
+		stock.setAccount(a);
 	}
 	
 	@After
@@ -62,8 +66,8 @@ public class TransactionDAOImplTest {
 		Date d1 = cal.getTime();
 		
 		Transaction[] tArray = new Transaction[2]; 
-		tArray[0] = new Transaction("NFLX", a, d1, Constants.TRANSACTION_TYPE_STOCK_DIVIDEND, 95.68, 5.62, 2.56);
-		tArray[1] = new Transaction("NFLX", a, d1, Constants.TRANSACTION_TYPE_OPTION_SALE_CALL, 95.68, -85.5, 0.00);
+		tArray[0] = new Transaction(stock, d1, Constants.TRANSACTION_TYPE_STOCK_DIVIDEND, 95.68, 5.62, 2.56);
+		tArray[1] = new Transaction(stock, d1, Constants.TRANSACTION_TYPE_OPTION_SALE_CALL, 95.68, -85.5, 0.00);
 		
 		for(Transaction t : tArray){
 			tdi.insertTransaction(t);
@@ -83,7 +87,7 @@ public class TransactionDAOImplTest {
 				Calendar calStock = Calendar.getInstance();
 				calStock.setTime(tArray[i].getTransactionDate());
 				
-				assertEquals(tArray[i].getStock(), rs.getString("Symbol"));
+				assertEquals(tArray[i].getStock().getStockID(), rs.getInt("Stock_ID"));
 				assertEquals(calStock.YEAR, calDB.YEAR);
 				assertEquals(calStock.MONTH, calDB.MONTH);
 				assertEquals(calStock.DATE, calDB.DATE);
@@ -92,7 +96,7 @@ public class TransactionDAOImplTest {
 				assertEquals(tArray[i].getNet(), rs.getDouble("Net"), 0);
 				assertEquals(tArray[i].getCommission(), rs.getDouble("Commission"), 0);
 				assertEquals(tArray[i].getTransactionID(), rs.getInt("Transaction_ID"));
-				assertEquals(tArray[i].getAccount().getNumber(), rs.getString("Number"));
+				assertEquals(tArray[i].getStock().getAccount().getAccountID(), rs.getInt("Account_ID"));
 				i++;
 			}
 		} catch (Exception ex){
@@ -122,7 +126,7 @@ public class TransactionDAOImplTest {
 		Calendar cal = Calendar.getInstance();
 		Date d1 = cal.getTime();
 		
-		Transaction t = new Transaction("NFLX", a, d1, Constants.TRANSACTION_TYPE_STOCK_DIVIDEND, 94.68, 58.23, 3.25);
+		Transaction t = new Transaction(stock, d1, Constants.TRANSACTION_TYPE_STOCK_DIVIDEND, 94.68, 58.23, 3.25);
 		
 		query = "INSERT INTO STOCKOPTIONS.TRANSACTIONS (Symbol, Account, Date, Transaction_Type, Price, Net, Commission) "
 				+ "VALUES(?, ?, ?, ?, ?, ?, ?)";
@@ -187,25 +191,25 @@ public class TransactionDAOImplTest {
 		//Account a = setUpAccount(conn);
 		query = "INSERT INTO STOCKOPTIONS.STOCK VALUES('NFLX', 'Netflix, Inc.', 0.25, 1, " + a.getAccountID() + ")";
 		execute(query, conn);
-		Stock s = new Stock("NFLX", "Netflix, Inc.", 0.25, 1);
+		Stock s = new Stock("NFLX", "Netflix, Inc.", 0.25, true);
 
 		Calendar cal = Calendar.getInstance();
 		Date d1 = cal.getTime();
 		cal.add(Calendar.DAY_OF_MONTH, -1);
 		Date d2 = cal.getTime();
 		
-		query = "INSERT INTO STOCKOPTIONS.TRANSACTIONS (Symbol, Account, Date, Transaction_Type, Price, Net, Commission) "
+		query = "INSERT INTO STOCKOPTIONS.TRANSACTIONS (Symbol_ID, Account_ID, Date, Transaction_Type, Price, Net, Commission) "
 				+ "VALUES(?, ?, ?, ?, ?, ?, ?)";
 		
 		Transaction[] tArray = new Transaction[2];
-		tArray[0] = new Transaction("NFLX", a, d1, Constants.TRANSACTION_TYPE_STOCK_SALE, 86.23, 987.25, 0.00);
-		tArray[1] = new Transaction("NFLX", a, d2, Constants.TRANSACTION_TYPE_OPTION_SALE_CALL, 58.32, 872.65, 78.35);
+		tArray[0] = new Transaction(stock, d1, Constants.TRANSACTION_TYPE_STOCK_SALE, 86.23, 987.25, 0.00);
+		tArray[1] = new Transaction(stock, d2, Constants.TRANSACTION_TYPE_OPTION_SALE_CALL, 58.32, 872.65, 78.35);
 		
 		for(Transaction t : tArray){
 			try{
 				pstmt = conn.prepareStatement(query, new String[] {"TRANSACTION_ID"});
-				pstmt.setString(1, t.getStock());
-				pstmt.setInt(2, t.getAccount().getAccountID());
+				pstmt.setInt(1, t.getStock().getStockID());
+				pstmt.setInt(2, t.getStock().getAccount().getAccountID());
 				pstmt.setDate(3, new java.sql.Date(t.getTransactionDate().getTime()));
 				pstmt.setString(4, t.getTransactionType());
 				pstmt.setDouble(5, t.getPrice());
@@ -248,7 +252,7 @@ public class TransactionDAOImplTest {
 				assertEquals(tArray[0].getNet(), rs.getDouble("Net"), 0);
 				assertEquals(tArray[0].getCommission(), rs.getDouble("Commission"), 0);
 				assertEquals(tArray[0].getTransactionType(), rs.getString("Transaction_Type"));
-				assertEquals(tArray[0].getAccount().getAccountID(), rs.getInt("Account"));
+				assertEquals(tArray[0].getStock().getAccount().getAccountID(), rs.getInt("Account"));
 				i++;
 			}
 			
@@ -300,8 +304,8 @@ public class TransactionDAOImplTest {
 		execute(query, conn);
 		
 		Stock[] sArray = new Stock[2];
-		sArray[0] = new Stock("NFLX", "Netflix, Inc.", 0.25, 1);
-		sArray[1] = new Stock("AMZN", "Amazon.com, Inc.", 0.65, 1);
+		sArray[0] = new Stock("NFLX", "Netflix, Inc.", 0.25, true);
+		sArray[1] = new Stock("AMZN", "Amazon.com, Inc.", 0.65, true);
 		
 		ResultSet rs = tImpl.getStockTransactionHistory(sArray[0]);
 		

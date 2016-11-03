@@ -3,29 +3,29 @@ package com.jkramer.model;
 import java.util.LinkedHashMap;
 
 public class Stock {
-	public String symbol;
-	public String companyName;
-	public double annualDivRate;
-	public String accountNumber;
-	public boolean active;
-	public LinkedHashMap<Integer, Transaction> transactionHistory;
-	public LinkedHashMap<Integer, Price> priceHistory;
+	private int stockID;
+	private String symbol;
+	private String companyName;
+	private double annualDivRate;
+	private Account account;
+	private boolean active;
+	private LinkedHashMap<Integer, Transaction> transactionHistory;
 	
 	//Spring Constructor
 	public Stock(){
 		
 	}
 	
-	public Stock(String s, String cn, double adr, int act){
-		this(s, cn, adr, act, "");
+	public Stock(String s, String cn, double adr, boolean act){
+		this(s, cn, adr, act, null);
 	}
-	
-	public Stock(String s, String cn, double adr, int act, String acc){
+
+	public Stock(String s, String cn, double adr, boolean act, Account acc){
 		this.symbol = s;
 		this.companyName = cn;
 		this.annualDivRate = adr;
-		this.accountNumber = acc;
-		this.active = (act == 1) ? true : false;
+		this.account = acc;
+		this.active = act;
 	}
 	
 	public String getSymbol(){
@@ -48,7 +48,7 @@ public class Stock {
 		return annualDivRate;
 	}
 	
-	public void setAnnualDivRate(Double adr){
+	public void setAnnualDivRate(double adr){
 		this.annualDivRate = adr;
 	}
 	
@@ -60,12 +60,12 @@ public class Stock {
 		this.active = act;
 	}
 	
-	public String getAccountNumber(){
-		return accountNumber;
+	public Account getAccount(){
+		return account;
 	}
 	
-	public void setAccountNumber(String acc){
-		this.accountNumber = acc;
+	public void setAccount(Account acc){
+		this.account = acc;
 	}
 	
 	public void setTransactionHistory(LinkedHashMap<Integer, Transaction> t){
@@ -75,21 +75,21 @@ public class Stock {
 	public LinkedHashMap<Integer, Transaction> getTransactionHistory(){
 		return transactionHistory;
 	}
-	
-	public void setPriceHistory(LinkedHashMap<Integer, Price> p){
-		this.priceHistory = p;
+		
+	/**
+	 * @return the stockID
+	 */
+	public int getStockID() {
+		return stockID;
 	}
-	
-	public LinkedHashMap<Integer, Price> getPriceHistory(){
-		return priceHistory;
+
+	/**
+	 * @param stockID the stockID to set
+	 */
+	public void setStockID(int stockID) {
+		this.stockID = stockID;
 	}
-	
-	public void dropPrice(int priceID){
-		if(!priceHistory.isEmpty()){
-			priceHistory.remove(priceID);
-		}
-	}
-	
+
 	public void dropTransaction(int transactionID){
 		if(!transactionHistory.isEmpty()){
 			transactionHistory.remove(transactionID);

@@ -103,7 +103,6 @@ public class PriceDAOImpl implements PriceDAO {
 			pstmt.setInt(1, priceID);
 			pstmt.executeUpdate();
 			
-			stock.dropPrice(priceID);
 		} catch (Exception ex){
 			ex.printStackTrace();
 		} finally {

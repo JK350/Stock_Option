@@ -1,6 +1,7 @@
 package com.jkramer.service;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import com.jkramer.dao.StockDAOImpl;
 import com.jkramer.model.Account;
@@ -10,7 +11,7 @@ import java.sql.ResultSet;
 
 public class StockService {
 	
-	public HashMap<String, Stock> getAllStockHashMap(){
+	public HashMap<String, Stock> getAllStockHashMap(TreeMap<String, Account> accountMap){
 		HashMap<String, Stock> sMap = new HashMap<String, Stock>();
 		StockDAOImpl stockDAOImpl = new StockDAOImpl();
 		ResultSet rs = stockDAOImpl.getAllStocks();
@@ -20,9 +21,9 @@ public class StockService {
 				String symbol = rs.getString("SYMBOL");
 				double annDivRate = rs.getDouble("ANNUAL_DIV_RATE");
 				String compName = rs.getString("NAME");
-				int active = rs.getInt("ACTIVE");
+				boolean active = rs.getBoolean("ACTIVE");
 				
-				Stock stock = new Stock(symbol, compName, annDivRate, active);
+				Stock stock = new Stock(symbol, compName, annDivRate, active, accountMap.get(rs.getString("NUMBER")));
 				
 				sMap.put(symbol, stock);
 			}
@@ -40,10 +41,9 @@ public class StockService {
 		return success;
 	}
 	
-	public boolean insertStock(Stock s, Account a){
+	public boolean insertStock(Stock s){
 		StockDAOImpl stockDAOImpl = new StockDAOImpl();
-		int accountID = a.getAccountID();
-		boolean success = stockDAOImpl.insertStock(s, accountID);
+		boolean success = stockDAOImpl.insertStock(s);
 		
 		return success;
 	}

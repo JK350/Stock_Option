@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import com.jkramer.model.Stock;
 
 public interface StockDAO {
-	public boolean insertStock(Stock stock, int accountID);
+	public boolean insertStock(Stock stock);
 	
 	public boolean updateStock(Stock stock);
 	

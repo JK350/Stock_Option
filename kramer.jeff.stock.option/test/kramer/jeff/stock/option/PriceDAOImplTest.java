@@ -168,7 +168,7 @@ public class PriceDAOImplTest {
 		cal.add(Calendar.DAY_OF_MONTH, -1);
 		Date d2 = cal.getTime();
 		
-		Stock s = new Stock("NFLX", "Netflix, Inc.", 0.25, 1);
+		Stock s = new Stock("NFLX", "Netflix, Inc.", 0.25, true);
 		
 		query = "INSERT INTO STOCKOPTIONS.STOCK VALUES('NFLX', 'Netflix, Inc.', 0.25, 1)";
 		
@@ -196,7 +196,7 @@ public class PriceDAOImplTest {
 			ex.printStackTrace();
 		}
 		
-		s.setPriceHistory(pMap);
+		//s.setPriceHistory(pMap);
 		
 		pImpl.deletePrice(pArray[0], s);
 		
@@ -218,7 +218,7 @@ public class PriceDAOImplTest {
 			ex.printStackTrace();
 		}
 		
-		pMap = s.getPriceHistory();
+		//pMap = s.getPriceHistory();
 		
 		assertEquals(1, pMap.size());
 		assertTrue(pMap.containsKey(priceID));
@@ -244,8 +244,8 @@ public class PriceDAOImplTest {
 		priceValues[1] = 98.25;
 		
 		Stock[] sArray = new Stock[2];
-		sArray[0] = new Stock("NFLX", "Netflix, Inc.", 0.25, 1);
-		sArray[1] = new Stock("AMZN", "Amazon.com, Inc.", 0.95, 1);
+		sArray[0] = new Stock("NFLX", "Netflix, Inc.", 0.25, true);
+		sArray[1] = new Stock("AMZN", "Amazon.com, Inc.", 0.95, true);
 		
 		query = "INSERT INTO STOCKOPTIONS.STOCK "
 				+ "VALUES('NFLX', 'Netflic, Inc.', 0.25, 1),"

@@ -44,8 +44,8 @@ public class StockDAOImplTest{
 		stockArray[0] = (Stock) context.getBean("stockOne");
 		stockArray[1] = (Stock) context.getBean("stockTwo");
 		
-		stockArray[0].setAccountNumber(a.getNumber());
-		stockArray[1].setAccountNumber(a.getNumber());
+		stockArray[0].setAccount(a);
+		stockArray[1].setAccount(a);
 	}
 	
 	@After
@@ -60,7 +60,7 @@ public class StockDAOImplTest{
 	public void testInsertStock(){
 		System.out.println("Starting testInsertStock() ...");
 		for(Stock s : stockArray){
-			assertTrue(si.insertStock(s, a.getAccountID()));
+			assertTrue(si.insertStock(s));
 		}
 		
 		query = "SELECT * FROM STOCKOPTIONS.STOCK ORDER BY Symbol";
@@ -74,8 +74,9 @@ public class StockDAOImplTest{
 				assertEquals(stockArray[i].getSymbol(), rs.getString("Symbol"));
 				assertEquals(stockArray[i].getCompanyName(), rs.getString("Name"));
 				assertEquals(stockArray[i].getAnnualDivRate(), rs.getDouble("Annual_Div_Rate"), 0);
+				assertEquals(stockArray[i].getStockID(), rs.getInt("Stock_ID"));
 				assertEquals(a.getAccountID(), rs.getInt("Account"));
-				assertEquals(1, rs.getInt("Active"));
+				assertEquals(stockArray[i].isActive(), rs.getBoolean("Active"));
 				
 				i++;
 			}
@@ -93,9 +94,7 @@ public class StockDAOImplTest{
 	@Test
 	public void testUpdateStock() {
 		System.out.println("Starting testUpdateStock() ...");
-		query = "INSERT INTO STOCKOPTIONS.STOCK (Symbol, Name, Annual_Div_Rate, Active, Account) "
-				+ "VALUES('AMZN', 'Amazon.com, Inc.', 0.25, 0, " + a.getAccountID() + ")";		
-		execute(query, conn);
+		insertStock(stockArray[0]);
 		
 		stockArray[0].setCompanyName("Netflix, Incorporated");
 		stockArray[0].setAnnualDivRate(.30);
@@ -123,9 +122,7 @@ public class StockDAOImplTest{
 	@Test
 	public void testDeactivateStock() {
 		System.out.println("Starting testDeactivateStock() ...");
-		query = "INSERT INTO STOCKOPTIONS.STOCK (Symbol, Name, Annual_Div_Rate, Active, Account) "
-				+ "VALUES('AMZN', 'Amazon.com, Inc.', 0.25, 0, " + a.getAccountID() + ")";		
-		execute(query, conn);
+		insertStock(stockArray[0]);
 		
 		assertTrue(si.deactivateStock(stockArray[0]));
 		
@@ -148,11 +145,8 @@ public class StockDAOImplTest{
 	@Test
 	public void testGetAllStocks() {
 		System.out.println("Starting testGetAllStocks() ...");
-
-		query = "INSERT INTO STOCKOPTIONS.STOCK (Symbol, Name, Annual_Div_Rate, Active, Account) "
-				+ "VALUES('AMZN', 'Amazon.com, Inc.', 0.25, 0, " + a.getAccountID() + "),"
-				+ "('NKE', 'Nike Inc', 0.4, 1, " + a.getAccountID() + ")";	
-		execute(query, conn);
+		insertStock(stockArray[0]);
+		insertStock(stockArray[1]);
 		
 		rs = si.getAllStocks();
 		
@@ -162,7 +156,8 @@ public class StockDAOImplTest{
 				assertEquals(stockArray[i].getSymbol(), rs.getString("Symbol"));
 				assertEquals(stockArray[i].getCompanyName(), rs.getString("Name"));
 				assertEquals(stockArray[i].getAnnualDivRate(), rs.getDouble("Annual_Div_Rate"), 0);
-				assertEquals(stockArray[i].getAccountNumber(), rs.getString("Number"));
+				assertEquals(stockArray[i].getAccount().getNumber(), rs.getString("Number"));
+				assertEquals(stockArray[i].getStockID(), rs.getInt("Stock_ID"));
 				i++;
 			}
 		} catch (Exception ex){
@@ -175,11 +170,9 @@ public class StockDAOImplTest{
 	@Test
 	public void testGetActiveStocks() {
 		System.out.println("Starting testGetAllStocks() ...");
-
-		query = "INSERT INTO STOCKOPTIONS.STOCK (Symbol, Name, Annual_Div_Rate, Active, Account) "
-				+ "VALUES('AMZN', 'Amazon.com, Inc.', 0.25, 0, " + a.getAccountID() + "),"
-				+ "('NKE', 'Nike Inc', 0.4, 1, " + a.getAccountID() + ")";	
-		execute(query, conn);
+	
+		insertStock(stockArray[0]);
+		insertStock(stockArray[1]);
 		
 		rs = si.getActiveStocks();
 		
@@ -188,7 +181,7 @@ public class StockDAOImplTest{
 				assertEquals(stockArray[1].getSymbol(), rs.getString("Symbol"));
 				assertEquals(stockArray[1].getCompanyName(), rs.getString("Name"));
 				assertEquals(stockArray[1].getAnnualDivRate(), rs.getDouble("Annual_Div_Rate"), 0);
-				assertEquals(stockArray[1].getAccountNumber(), rs.getString("Number"));
+				assertEquals(stockArray[1].getAccount().getNumber(), rs.getString("Number"));
 			}
 		} catch (Exception ex){
 			ex.printStackTrace();
@@ -198,11 +191,8 @@ public class StockDAOImplTest{
 	@Test
 	public void testDeleteStock(){
 		System.out.println("Starting testDeleteStocks() ...");
-
-		query = "INSERT INTO STOCKOPTIONS.STOCK (Symbol, Name, Annual_Div_Rate, Active, Account) "
-				+ "VALUES('AMZN', 'Amazon.com, Inc.', 0.25, 0, " + a.getAccountID() + "),"
-				+ "('NKE', 'Nike Inc', 0.4, 1, " + a.getAccountID() + ")";	
-		execute(query, conn);
+		insertStock(stockArray[0]);
+		insertStock(stockArray[1]);
 		
 		assertTrue(si.deleteStock(stockArray[1]));
 		
@@ -278,6 +268,32 @@ public class StockDAOImplTest{
 			} catch (Exception ex){
 				ex.printStackTrace();
 			}
+		}
+	}
+	
+	private void insertStock(Stock stock){
+		PreparedStatement pstmt = null;
+		query = "INSERT INTO " + Constants.SCHEMA + ".STOCK (Symbol, Name, Annual_Div_Rate, Active, Account)" + 
+				" VALUES(?, ?, ?, ?, ?)";
+						
+		try{
+			pstmt = conn.prepareStatement(query, new String[] {"STOCK_ID"});
+			pstmt.setString(1, stock.getSymbol());
+			pstmt.setString(2, stock.getCompanyName());
+			pstmt.setDouble(3, stock.getAnnualDivRate());
+			pstmt.setBoolean(4, stock.isActive());
+			pstmt.setInt(5, stock.getAccount().getAccountID());
+			
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			
+			if(rs.next()){
+				stock.setStockID(rs.getInt(1));
+			}
+			
+		} catch (Exception ex){
+			ex.printStackTrace();
 		}
 	}
 }

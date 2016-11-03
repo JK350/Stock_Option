@@ -183,10 +183,9 @@ public final class GUINewStock {
 				}
 				
 				//Create a new Stock object for the new stock and insert the new stock into the database.
-				Stock s = new Stock(symbol, companyName, annualDivRate, 1, accountNumber);
-				Account account = accountMap.get(accountNumber);
+				Stock s = new Stock(symbol, companyName, annualDivRate, true, accountMap.get(accountNumber));
 				StockService stockService = new StockService();
-				if(stockService.insertStock(s, account)){
+				if(stockService.insertStock(s)){
 					stockMap.put(s.getSymbol(), s);
 					msgLabel.setManaged(true);
 					msgLabel.setTextFill(Color.BLACK);
