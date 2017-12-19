@@ -7,9 +7,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jkramer.dao.StockDAOImpl;
-import com.jkramer.model.Account;
-import com.jkramer.model.Stock;
+import kramer.jeff.stock.option.dao.StockDAOImpl;
+import kramer.jeff.stock.option.model.Account;
+import kramer.jeff.stock.option.model.Stock;
 
 import java.sql.Statement;
 import java.sql.PreparedStatement;

@@ -3,7 +3,7 @@ package kramer.jeff.stock.option;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import com.jkramer.model.Price;
+import kramer.jeff.stock.option.model.Price;
 
 import junit.framework.*;
 

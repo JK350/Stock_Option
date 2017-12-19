@@ -10,10 +10,10 @@ import javafx.event.*;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-import com.jkramer.model.Account;
-import com.jkramer.model.Stock;
-import com.jkramer.service.AccountService;
-import com.jkramer.service.StockService;
+import kramer.jeff.stock.option.model.Account;
+import kramer.jeff.stock.option.model.Stock;
+import kramer.jeff.stock.option.service.AccountService;
+import kramer.jeff.stock.option.service.StockService;
 import kramer.jeff.stock.option.common.DatabaseInitializer;
 import kramer.jeff.stock.option.gui.GUINewAccount;
 import kramer.jeff.stock.option.gui.GUINewStock;

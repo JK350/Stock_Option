@@ -11,9 +11,9 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-import com.jkramer.model.Account;
-import com.jkramer.model.Stock;
-import com.jkramer.service.StockService;
+import kramer.jeff.stock.option.model.Account;
+import kramer.jeff.stock.option.model.Stock;
+import kramer.jeff.stock.option.service.StockService;
 
 /**
  * Creates the window for the user to enter new stocks

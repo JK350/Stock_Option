@@ -9,8 +9,8 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.util.Calendar;
 
-import com.jkramer.dao.AccountDAOImpl;
-import com.jkramer.model.Account;
+import kramer.jeff.stock.option.dao.AccountDAOImpl;
+import kramer.jeff.stock.option.model.Account;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

@@ -1,8 +1,8 @@
-package com.jkramer.dao;
+package kramer.jeff.stock.option.dao;
 
 import java.sql.ResultSet;
 
-import com.jkramer.model.Stock;
+import kramer.jeff.stock.option.model.Stock;
 
 public interface StockDAO {
 	public boolean insertStock(Stock stock);

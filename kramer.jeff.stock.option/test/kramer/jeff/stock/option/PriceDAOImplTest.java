@@ -11,9 +11,9 @@ import java.util.LinkedHashMap;
 
 import org.junit.Test;
 
-import com.jkramer.dao.PriceDAOImpl;
-import com.jkramer.model.Price;
-import com.jkramer.model.Stock;
+import kramer.jeff.stock.option.dao.PriceDAOImpl;
+import kramer.jeff.stock.option.model.Price;
+import kramer.jeff.stock.option.model.Stock;
 
 public class PriceDAOImplTest {
 

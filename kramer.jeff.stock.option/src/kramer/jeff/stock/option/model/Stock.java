@@ -1,4 +1,4 @@
-package com.jkramer.model;
+package kramer.jeff.stock.option.model;
 
 import java.util.LinkedHashMap;
 

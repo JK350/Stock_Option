@@ -3,8 +3,8 @@ package kramer.jeff.stock.option.gui;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-import com.jkramer.model.Account;
-import com.jkramer.model.Stock;
+import kramer.jeff.stock.option.model.Account;
+import kramer.jeff.stock.option.model.Stock;
 
 public interface GUINewTransaction {
 

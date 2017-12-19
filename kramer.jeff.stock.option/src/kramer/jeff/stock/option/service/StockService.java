@@ -1,11 +1,11 @@
-package com.jkramer.service;
+package kramer.jeff.stock.option.service;
 
 import java.util.HashMap;
 import java.util.TreeMap;
 
-import com.jkramer.dao.StockDAOImpl;
-import com.jkramer.model.Account;
-import com.jkramer.model.Stock;
+import kramer.jeff.stock.option.dao.StockDAOImpl;
+import kramer.jeff.stock.option.model.Account;
+import kramer.jeff.stock.option.model.Stock;
 
 import java.sql.ResultSet;
 

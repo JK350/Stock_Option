@@ -1,4 +1,4 @@
-package com.jkramer.dao;
+package kramer.jeff.stock.option.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,8 +8,8 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
-import com.jkramer.model.Price;
-import com.jkramer.model.Stock;
+import kramer.jeff.stock.option.model.Price;
+import kramer.jeff.stock.option.model.Stock;
 
 import kramer.jeff.stock.option.common.Constants;
 

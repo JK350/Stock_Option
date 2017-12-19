@@ -1,9 +1,9 @@
-package com.jkramer.dao;
+package kramer.jeff.stock.option.dao;
 
 import java.util.LinkedHashMap;
 
-import com.jkramer.model.Price;
-import com.jkramer.model.Stock;
+import kramer.jeff.stock.option.model.Price;
+import kramer.jeff.stock.option.model.Stock;
 
 public interface PriceDAO {
 	public void insertPrice(Price price);

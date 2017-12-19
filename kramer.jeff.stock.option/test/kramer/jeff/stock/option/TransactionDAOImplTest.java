@@ -15,10 +15,10 @@ import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.ApplicationContext;
 
-import com.jkramer.dao.TransactionDAOImpl;
-import com.jkramer.model.Account;
-import com.jkramer.model.Stock;
-import com.jkramer.model.Transaction;
+import kramer.jeff.stock.option.dao.TransactionDAOImpl;
+import kramer.jeff.stock.option.model.Account;
+import kramer.jeff.stock.option.model.Stock;
+import kramer.jeff.stock.option.model.Transaction;
 
 public class TransactionDAOImplTest {
 	

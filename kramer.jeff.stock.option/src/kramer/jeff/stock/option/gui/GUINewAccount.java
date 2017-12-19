@@ -10,8 +10,8 @@ import javafx.scene.text.*;
 import javafx.stage.Stage;
 import java.util.TreeMap;
 
-import com.jkramer.model.Account;
-import com.jkramer.service.AccountService;
+import kramer.jeff.stock.option.model.Account;
+import kramer.jeff.stock.option.service.AccountService;
 import kramer.jeff.stock.option.common.Constants;
 
 import java.util.Date;
