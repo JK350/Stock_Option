@@ -21,7 +21,7 @@ import kramer.jeff.stock.option.common.Constants;
 
 public final class GUINewStockPurchase implements GUINewTransaction{
 	
-	GUINewStockPurchase(HashMap<String, Stock> stockMap, TreeMap<String, Account> accountMap){
+	public GUINewStockPurchase(HashMap<String, Stock> stockMap, TreeMap<String, Account> accountMap){
 		createWindow(stockMap, accountMap);
 	}
 	
