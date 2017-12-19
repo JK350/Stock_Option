@@ -25,13 +25,13 @@ public class TransactionDAOImpl implements TransactionDAO {
 	public void insertTransaction(Transaction t) {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
-		Account a = t.getAccount();
-		String query = "INSERT INTO " + Constants.SCHEMA + ".TRANSACTIONS (Symbol, Account, Date, Transaction_Type, Price, Net, Commission)"
+		Account a = t.getStock().getAccount();
+		String query = "INSERT INTO " + Constants.SCHEMA + ".TRANSACTIONS (Stock_ID, Account_ID, Date, Transaction_Type, Price, Net, Commission)"
 				+ "VALUES(?, ?, ?, ?, ?, ?)";
 		
 		try{
 			pstmt = conn.prepareStatement(query, new String[] {"TRANSACTION_ID"});
-			pstmt.setString(1, t.getStock());
+			pstmt.setInt(1, t.getStock().getStockID());
 			pstmt.setInt(2, a.getAccountID());
 			pstmt.setDate(3, new java.sql.Date(t.getTransactionDate().getTime()));
 			pstmt.setString(4, t.getTransactionType());
@@ -62,14 +62,14 @@ public class TransactionDAOImpl implements TransactionDAO {
 	public void updateTransaction(Transaction t) {
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
-		Account a = t.getAccount();
+		Account a = t.getStock().getAccount();
 		String query = "UPDATE " + Constants.SCHEMA + ".TRANSACTIONS "
-				+ "SET Symbol = ?, Account = ?, Date = ?, Transaction_Type = ?, Price = ?, Net = ?, Commission = ?"
+				+ "SET Stock_ID = ?, Account_ID = ?, Date = ?, Transaction_Type = ?, Price = ?, Net = ?, Commission = ?"
 				+ "WHERE Transaction_ID = ?";
 		
 		try{
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, t.getStock());
+			pstmt.setInt(1, t.getStock().getStockID());
 			pstmt.setInt(2, a.getAccountID());
 			pstmt.setDate(3, new java.sql.Date(t.getTransactionDate().getTime()));
 			pstmt.setString(4, t.getTransactionType());

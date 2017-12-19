@@ -31,15 +31,13 @@ public class OptionProgram extends Application{
 		DatabaseInitializer dbi = new DatabaseInitializer();
 		dbi.startUp();
 		
-		//Load all stocks into a HashMap for use in the program
-		StockService stockService = new StockService();
-		stockMap = stockService.getAllStockHashMap();
-		
 		//Load all accounts into a TreeMap for use in the program
 		AccountService accountService = new AccountService();
 		accountMap = accountService.getAllAccounts();
 		
-		
+		//Load all stocks into a HashMap for use in the program
+		StockService stockService = new StockService();
+		stockMap = stockService.getAllStockHashMap(accountMap);
 	}
 	
 	public void start(Stage stage){

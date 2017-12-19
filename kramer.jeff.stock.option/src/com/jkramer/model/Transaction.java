@@ -3,19 +3,23 @@ package com.jkramer.model;
 import java.util.Date;
 
 public class Transaction {
-	private Date transactionDate;
+	private Stock stock;
 	private String transactionType;
+	private Date transactionDate;
+	private int shares;
 	private double price;
-	private double net;
+	private double total;
 	private double commission;
+	private double net;
 	private int transactionID;
-	private String stock;
-	private Account account;
+	private double strikePrice;
+	private Date expirationDate;
 	
 	/**
 	 * Constructor for Transaction information coming out of the database
 	 * Transaction ID IS present in the constructor
 	 * 
+	 * @param stock
 	 * @param tID
 	 * @param tDate
 	 * @param action
@@ -23,9 +27,8 @@ public class Transaction {
 	 * @param net
 	 * @param commission
 	 */
-	public Transaction(String s, Account a, int tID, Date tDate, String tType, double price, double net, double commission) {
-		this.stock = s;
-		this.account = a;
+	public Transaction(Stock stock, int tID, Date tDate, String tType, double price, double net, double commission) {
+		this.stock = stock;
 		this.transactionDate = tDate;
 		this.transactionType = tType;
 		this.price = price;
@@ -38,17 +41,15 @@ public class Transaction {
 	 * Constructor for Transaction information going into the database
 	 * Transaction ID IS NOT present in the constructor
 	 * 
-	 * @param s
-	 * @param a
+	 * @param stock
 	 * @param tDate
 	 * @param tType
 	 * @param price
 	 * @param net
 	 * @param commission
 	 */
-	public Transaction(String s, Account a, Date tDate, String tType, double price, double net, double commission) {
-		this.stock = s;
-		this.account = a;
+	public Transaction(Stock stock, Date tDate, String tType, double price, double net, double commission) {
+		this.stock = stock;
 		this.transactionDate = tDate;
 		this.transactionType = tType;
 		this.price = price;
@@ -56,11 +57,11 @@ public class Transaction {
 		this.commission = commission;
 	}
 
-	public String getStock(){
+	public Stock getStock(){
 		return stock;
 	}
 	
-	public void setStock(String s){
+	public void setStock(Stock s){
 		this.stock = s;
 	}
 	
@@ -116,19 +117,5 @@ public class Transaction {
 	 */
 	public void setCommission(double commission) {
 		this.commission = commission;
-	}
-
-	/**
-	 * @return the account
-	 */
-	public Account getAccount() {
-		return account;
-	}
-
-	/**
-	 * @param account the account to set
-	 */
-	public void setAccount(Account account) {
-		this.account = account;
 	}
 }
