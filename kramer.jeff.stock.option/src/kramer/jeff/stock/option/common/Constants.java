@@ -1,4 +1,4 @@
-package kramer.jeff.stock.option;
+package kramer.jeff.stock.option.common;
 
 import java.util.HashMap;
 

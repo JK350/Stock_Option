@@ -8,7 +8,7 @@ import com.jkramer.model.Account;
 import com.jkramer.model.Stock;
 import com.jkramer.model.Transaction;
 
-import kramer.jeff.stock.option.Constants;
+import kramer.jeff.stock.option.common.Constants;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -1,4 +1,6 @@
-package kramer.jeff.stock.option;
+package kramer.jeff.stock.option.common;
+
+import kramer.jeff.stock.option.common.Constants;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

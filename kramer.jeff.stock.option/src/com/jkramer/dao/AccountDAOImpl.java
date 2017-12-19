@@ -9,7 +9,7 @@ import java.util.Date;
 
 import com.jkramer.model.Account;
 
-import kramer.jeff.stock.option.Constants;
+import kramer.jeff.stock.option.common.Constants;
 
 public class AccountDAOImpl implements AccountDAO {
 

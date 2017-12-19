@@ -1,4 +1,4 @@
-package kramer.jeff.stock.option;
+package kramer.jeff.stock.option.gui;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -16,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import kramer.jeff.stock.option.common.Constants;
 
 
 public final class GUINewStockPurchase implements GUINewTransaction{

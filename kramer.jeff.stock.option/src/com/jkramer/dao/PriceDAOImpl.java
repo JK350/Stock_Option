@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 import com.jkramer.model.Price;
 import com.jkramer.model.Stock;
 
-import kramer.jeff.stock.option.Constants;
+import kramer.jeff.stock.option.common.Constants;
 
 public class PriceDAOImpl implements PriceDAO {
 	

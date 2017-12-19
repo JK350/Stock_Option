@@ -4,12 +4,9 @@ import javafx.application.*;
 import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Paint;
 import javafx.scene.control.*;
-import javafx.scene.text.*;
 import javafx.event.*;
-import javafx.geometry.*;
-import javafx.scene.paint.*;
+
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -17,6 +14,10 @@ import com.jkramer.model.Account;
 import com.jkramer.model.Stock;
 import com.jkramer.service.AccountService;
 import com.jkramer.service.StockService;
+import kramer.jeff.stock.option.common.DatabaseInitializer;
+import kramer.jeff.stock.option.gui.GUINewAccount;
+import kramer.jeff.stock.option.gui.GUINewStock;
+import kramer.jeff.stock.option.gui.GUINewStockPurchase;
 
 public class OptionProgram extends Application{
 

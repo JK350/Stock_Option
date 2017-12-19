@@ -1,4 +1,4 @@
-package kramer.jeff.stock.option;
+package kramer.jeff.stock.option.gui;
 
 import javafx.event.*;
 import javafx.geometry.*;
