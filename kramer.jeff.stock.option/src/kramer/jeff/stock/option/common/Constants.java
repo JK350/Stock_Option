@@ -15,6 +15,7 @@ public final class Constants {
 	public static final String USER = "JKramer";
 	public static final String PASSWORD = "123abc456";
 	public static final String[] TABLES = {"ACCOUNTS", "STOCKS", "PRICES", "TRANSACTIONS"};
+	public static final String SCHEMA_CREATION_QUERY = "CREATE SCHEMA " + Constants.SCHEMA;
 	public static final HashMap<String, String> TABLE_CREATION_QUERIES = new HashMap<String, String>();
 	
 	/**

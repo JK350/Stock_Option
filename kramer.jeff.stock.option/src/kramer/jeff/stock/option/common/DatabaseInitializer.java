@@ -88,7 +88,7 @@ public final class DatabaseInitializer {
 		System.out.println("Creating schema " + Constants.SCHEMA);
 		try{
 			stmt = conn.createStatement();
-			stmt.execute("CREATE SCHEMA " + Constants.SCHEMA);
+			stmt.execute(Constants.SCHEMA_CREATION_QUERY);
 			stmt.close();
 		} catch (Exception ex){
 			ex.printStackTrace();
